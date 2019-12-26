@@ -5,15 +5,6 @@ var pet
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	var spawner = $Spawner
-	player = GameManager.player
-	pet = GameManager.pet
-	player.position = spawner.position
-	player.set_flip_h(spawner.flip_h)
-	pet.position = player.position
-	pet.set_flip_h(spawner.flip_h)
-	spawner.visible = false
-	yield(get_tree().create_timer(1), "timeout")
 	pass # Replace with function body.
 	
 

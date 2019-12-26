@@ -10,6 +10,13 @@ func _ready():
 	_sync_bounds()
 	#get_viewport().connect("size_changed", self, "_sync_bounds")
 
+func set_fade(value):
+	var seq := TweenSequence.new(get_tree())
+	seq.append($Foreground/Black, "color", Color(0,0,0,1 if value else 0), .25).from_current()
+	yield(seq, "finished")
+	#seq.append_interval(1)
+	#seq.append_callback($Sprite, "set_texture", [load("res://icon2.png")])
+	
 func _sync_bounds():
 	return
 	var viewport = get_viewport()

@@ -62,12 +62,17 @@ func update_hand():
 	
 func process_input(delta):
 	
-	var results = get_nearby_objects(64)
+	var results = get_nearby_objects(16)
 	if results:
 		for result in results:
 			var object = result.collider
 			if object.is_in_group("items"):
-				object.position += (position-object.position)*delta*2
+				var dist = get_center_pos().distance_to(object.global_position)
+				if dist < 8:
+					pickup()
+					object.queue_free()
+				else:
+					object.position += (get_center_pos()-object.position).normalized()*delta*100
 				
 	update_hand()
 	

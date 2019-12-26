@@ -5,7 +5,7 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 10, 8 )
 
-[node name="KinematicBody2D" type="RigidBody2D" groups=[
+[node name="Box" type="RigidBody2D" groups=[
 "bodies",
 ]]
 z_index = 1
@@ -15,8 +15,11 @@ continuous_cd = 1
 contacts_reported = 10
 can_sleep = false
 
-[node name="Box" type="Sprite" parent="."]
+[node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
+centered = false
+offset = Vector2( -10, -16 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, -8 )
 shape = SubResource( 1 )

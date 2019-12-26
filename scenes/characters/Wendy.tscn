@@ -59,7 +59,7 @@ animations = [ {
 [node name="Wendy" type="KinematicBody2D" groups=[
 "pets",
 ]]
-z_index = 20
+z_index = 10
 collision_layer = 2
 script = ExtResource( 11 )
 __meta__ = {
@@ -74,7 +74,7 @@ shape = SubResource( 1 )
 z_index = 5
 frames = SubResource( 2 )
 animation = "run"
-frame = 3
+frame = 2
 playing = true
 centered = false
 offset = Vector2( -16, -32 )

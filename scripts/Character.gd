@@ -21,14 +21,19 @@ var is_horizontal = false
 var is_speaking = false
 var is_flipped = false
 
-var is_override_animation = false
+var override_animation = null
 
 onready var speech_bubble_scene = preload("res://scenes/ui/SpeechBubble.tscn")
 var speech_bubble
 
+var height = 16
+
 func set_flip_h(value):
 	$AnimatedSprite.set_flip_h(value)
 
+func get_center_pos():
+	return position+Vector2(0,-height/2)
+	
 func get_nearby_objects(distance):
 	var circle = CircleShape2D.new()
 	circle.set_radius(distance)
@@ -70,14 +75,29 @@ func update_hand():
 	pass
 	
 func taunt():
-	is_override_animation = true
-	animate("taunt")
 	$TauntPlayer.play()
+	animate_override("taunt")
+
+func pickup():
+	animate_override("pickup", 1)
+	
+func cancel_override():
+	override_animation = null
+	
+func animate_override(animation, auto_stop = true, add_duration = 0):
+	animate(animation)
+	override_animation = animation
+	if not auto_stop:
+		return
 	var frame_duration = 1/$AnimatedSprite.frames.get_animation_speed($AnimatedSprite.animation)
 	while $AnimatedSprite.frame < $AnimatedSprite.frames.get_frame_count($AnimatedSprite.animation)-1:
 		yield(get_tree().create_timer(frame_duration), "timeout")
-	yield(get_tree().create_timer(frame_duration), "timeout")
-	is_override_animation = false
+		if override_animation != animation:
+			return
+	yield(get_tree().create_timer(frame_duration+add_duration), "timeout")
+	if override_animation != animation:
+		return
+	override_animation = null
 	
 var push = 0
 var player
@@ -108,7 +128,7 @@ func _physics_process(delta):
 		else:
 			run_time = step_wait
 	
-	if not is_override_animation:
+	if not override_animation:
 		if crouching:
 			if is_horizontal:
 				animate("call")
@@ -137,6 +157,7 @@ func _physics_process(delta):
 		on_ground = false
 		
 	velocity = move_and_slide(velocity, FLOOR, false, 4, PI/4, false)
+	
 	for index in get_slide_count():
 		var collision = get_slide_collision(index)
 		if collision.collider.is_in_group("bodies"):
