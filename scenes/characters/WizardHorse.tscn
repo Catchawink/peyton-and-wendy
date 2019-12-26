@@ -1,0 +1,55 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://scripts/Character.gd" type="Script" id=1]
+[ext_resource path="res://wizard_horse/wizard_horse_0.png" type="Texture" id=2]
+[ext_resource path="res://wizard_horse/wizard_horse_1.png" type="Texture" id=3]
+[ext_resource path="res://sfx/step_rock.wav" type="AudioStream" id=4]
+[ext_resource path="res://wizard_horse/wizard_horse_3.png" type="Texture" id=5]
+[ext_resource path="res://wizard_horse/wizard_horse_2.png" type="Texture" id=6]
+[ext_resource path="res://sfx/neigh.wav" type="AudioStream" id=7]
+[ext_resource path="res://wizard_horse/wizard_horse_4.png" type="Texture" id=8]
+[ext_resource path="res://wizard_horse/wizard_horse_5.png" type="Texture" id=9]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 5, 9 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "idle",
+"speed": 3.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 5 ), ExtResource( 8 ), ExtResource( 9 ) ],
+"loop": true,
+"name": "taunt",
+"speed": 8.0
+} ]
+
+[node name="WizardHorse" type="KinematicBody2D"]
+position = Vector2( -5, 28 )
+z_index = 1
+collision_layer = 2
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 1, -9 )
+shape = SubResource( 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 2 )
+animation = "idle"
+frame = 1
+playing = true
+centered = false
+offset = Vector2( -16, -32 )
+
+[node name="StepPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 4 )
+
+[node name="TauntPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 7 )
+volume_db = 15.0

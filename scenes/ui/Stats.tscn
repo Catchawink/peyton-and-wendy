@@ -1,0 +1,89 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://ui/health_bar.png" type="Texture" id=1]
+[ext_resource path="res://scenes/ui/Heart.tres" type="Animation" id=2]
+[ext_resource path="res://ui/heart/heart_2.png" type="Texture" id=3]
+[ext_resource path="res://ui/heart/heart_1.png" type="Texture" id=4]
+[ext_resource path="res://ui/heart/heart_0.png" type="Texture" id=5]
+[ext_resource path="res://ui/heart/heart_6.png" type="Texture" id=6]
+[ext_resource path="res://ui/heart/heart_7.png" type="Texture" id=7]
+[ext_resource path="res://ui/heart/heart_3.png" type="Texture" id=8]
+[ext_resource path="res://ui/heart/heart_4.png" type="Texture" id=9]
+[ext_resource path="res://ui/heart/heart_5.png" type="Texture" id=10]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 5 ), ExtResource( 4 ), ExtResource( 3 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 6 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "default",
+"speed": 10.0
+} ]
+
+[node name="CanvasLayer" type="CanvasLayer"]
+
+[node name="Stats" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 8.0
+margin_bottom = 8.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="TextureRect" parent="Stats"]
+margin_right = 40.0
+margin_bottom = 40.0
+texture = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect2" type="TextureRect" parent="Stats"]
+margin_left = 5.0
+margin_right = 21.0
+margin_bottom = 16.0
+rect_pivot_offset = Vector2( 35, 77 )
+texture = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Stats/TextureRect2"]
+autoplay = "Heart"
+anims/Heart = ExtResource( 2 )
+
+[node name="TextureRect3" type="TextureRect" parent="Stats"]
+margin_left = 16.0
+margin_right = 32.0
+margin_bottom = 16.0
+rect_pivot_offset = Vector2( 35, 77 )
+texture = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Stats/TextureRect3"]
+autoplay = "Heart"
+anims/Heart = ExtResource( 2 )
+
+[node name="TextureRect4" type="TextureRect" parent="Stats"]
+margin_left = 27.0
+margin_right = 43.0
+margin_bottom = 16.0
+rect_pivot_offset = Vector2( 35, 77 )
+texture = ExtResource( 7 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Stats/TextureRect4"]
+autoplay = "Heart"
+anims/Heart = ExtResource( 2 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="Stats"]
+visible = false
+frames = SubResource( 1 )
+frame = 7
+playing = true

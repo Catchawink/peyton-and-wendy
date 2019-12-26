@@ -1,0 +1,63 @@
+[gd_scene load_steps=25 format=2]
+
+[ext_resource path="res://scripts/Enemy.gd" type="Script" id=2]
+[ext_resource path="res://sfx/step_rock.wav" type="AudioStream" id=3]
+[ext_resource path="res://slime/slime_05.png" type="Texture" id=4]
+[ext_resource path="res://slime/slime_23.png" type="Texture" id=5]
+[ext_resource path="res://slime/slime_00.png" type="Texture" id=6]
+[ext_resource path="res://slime/slime_29.png" type="Texture" id=7]
+[ext_resource path="res://slime/slime_24.png" type="Texture" id=8]
+[ext_resource path="res://slime/slime_25.png" type="Texture" id=9]
+[ext_resource path="res://slime/slime_27.png" type="Texture" id=10]
+[ext_resource path="res://slime/slime_22.png" type="Texture" id=11]
+[ext_resource path="res://slime/slime_28.png" type="Texture" id=12]
+[ext_resource path="res://slime/slime_09.png" type="Texture" id=13]
+[ext_resource path="res://slime/slime_03.png" type="Texture" id=14]
+[ext_resource path="res://slime/slime_20.png" type="Texture" id=15]
+[ext_resource path="res://slime/slime_06.png" type="Texture" id=16]
+[ext_resource path="res://slime/slime_21.png" type="Texture" id=17]
+[ext_resource path="res://slime/slime_07.png" type="Texture" id=18]
+[ext_resource path="res://slime/slime_08.png" type="Texture" id=19]
+[ext_resource path="res://slime/slime_02.png" type="Texture" id=20]
+[ext_resource path="res://slime/slime_01.png" type="Texture" id=21]
+[ext_resource path="res://slime/slime_26.png" type="Texture" id=22]
+[ext_resource path="res://slime/slime_04.png" type="Texture" id=23]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 7, 4 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 6 ), ExtResource( 21 ), ExtResource( 20 ), ExtResource( 14 ), ExtResource( 23 ), ExtResource( 4 ), ExtResource( 16 ), ExtResource( 18 ), ExtResource( 19 ), ExtResource( 13 ) ],
+"loop": true,
+"name": "idle",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( 15 ), ExtResource( 17 ), ExtResource( 11 ), ExtResource( 5 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 22 ), ExtResource( 10 ), ExtResource( 12 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "run",
+"speed": 15.0
+} ]
+
+[node name="Slime" type="KinematicBody2D" groups=[
+"enemies",
+]]
+z_index = 5
+collision_layer = 2
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, 12 )
+shape = SubResource( 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 2 )
+animation = "run"
+frame = 8
+playing = true
+
+[node name="StepPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 3 )

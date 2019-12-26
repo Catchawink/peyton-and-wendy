@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/Magic and Mystery.wav-a47d2b16d1061f7eaae413d25e05d73d.sample"
+
+[deps]
+
+source_file="res://music/Magic and Mystery.wav"
+dest_files=[ "res://.import/Magic and Mystery.wav-a47d2b16d1061f7eaae413d25e05d73d.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=true
+compress/mode=0
