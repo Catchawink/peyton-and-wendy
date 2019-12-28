@@ -1,5 +1,8 @@
 tool extends Node2D
 
+func saved():
+	return ["script"]
+
 export var is_one_shot = true
 export var is_input_locked = false
 var is_executing = false
@@ -11,6 +14,9 @@ var wizard_horse
 func _ready():
 	if Engine.editor_hint:
 		return
+		
+	if !visible:
+		queue_free()
 	visible = false
 		
 	player = GameManager.player

@@ -1,6 +1,6 @@
 extends "Character.gd"
 
-var collar_offset = Vector2(4,-7)
+var collar_offset = Vector2(4,-6)
 var ideal_distance = 0
 var max_distance = 10000
 const leash_distance = 32

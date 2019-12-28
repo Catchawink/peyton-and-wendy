@@ -5,7 +5,7 @@
 [ext_resource path="res://sfx/door_close.wav" type="AudioStream" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 8, 10 )
+extents = Vector2( 8, 13 )
 
 [node name="Door" type="Node2D" groups=[
 "spawners",
@@ -21,7 +21,7 @@ offset = Vector2( -16, -32 )
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2( 0, -10 )
+position = Vector2( 0, -15 )
 shape = SubResource( 1 )
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]

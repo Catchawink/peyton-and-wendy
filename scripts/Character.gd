@@ -35,6 +35,12 @@ var type
 
 signal died
 
+var is_active = true
+
+func set_active(value):
+	is_active = value
+	visible = is_active
+
 func set_flip_h(value):
 	$AnimatedSprite.set_flip_h(value)
 
@@ -124,6 +130,9 @@ var default_health
 
 func is_dead():
 	return health == 0
+	
+func reset():
+	health = default_health
 
 func on_set_player():
 	pass
@@ -141,6 +150,10 @@ func die():
 	pass
 
 func _physics_process(delta):
+	if not is_active:
+		velocity = Vector2(0,0)
+		return
+		
 	if !is_dead() and position.y > GameManager.world_rect.end.y:
 		die()
 		return

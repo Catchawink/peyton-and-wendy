@@ -7,7 +7,7 @@ onready var item_scene = preload("res://scenes/ui/Item.tscn")
 var items = []
 var display_items = {}
 var current_item
-var current_index = -1
+var current_item_index = -1
 
 var is_active = false
 
@@ -23,14 +23,14 @@ func set_active(value):
 	update_visibility()
 	
 func select_left():
-	if current_index > 0:
+	if current_item_index > 0:
 		$ClickPlayer.play()
-		select_item(items[current_index-1])
+		select_item(items[current_item_index-1])
 		
 func select_right():
-	if current_index < len(items)-1:
+	if current_item_index < len(items)-1:
 		$ClickPlayer.play()
-		select_item(items[current_index+1])
+		select_item(items[current_item_index+1])
 	
 func add_item(item):
 	var item_display = item_scene.instance()
@@ -47,6 +47,7 @@ func add_item(item):
 func clear():
 	while len(items) > 0:
 		remove_item(items[0])
+	items.clear()
 
 func remove_item(item):
 	display_items[item].queue_free()
@@ -57,6 +58,11 @@ func remove_item(item):
 		current_item = null
 	pass
 	
+func select_item_by_index(index):
+	if index == -1:
+		return
+	select_item(items[index])
+	
 func select_item(item):
 	if current_item:
 		current_item.visible = false
@@ -65,7 +71,7 @@ func select_item(item):
 			stop_use()
 		display_items[current_item].get_node("Outline").visible = false
 	current_item = item
-	current_index = items.find(current_item)
+	current_item_index = items.find(current_item)
 	
 	current_item.select()
 	if current_item.use_hand:
@@ -76,13 +82,19 @@ func select_item(item):
 var is_using = false
 
 func start_use():
+	if !current_item:
+		return
 	is_using = true
 	current_item.start_use()
+	current_item.is_using = true
 	
 func stop_use():
+	if !current_item:
+		return
 	if is_using:
 		is_using = false
 		current_item.stop_use()
+		current_item.is_using = false
 	
 func update_visibility(play_sfx = true):
 	var old_visible = visible

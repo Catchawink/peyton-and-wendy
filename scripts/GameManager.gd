@@ -23,6 +23,8 @@ var last_path_name = ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	SaveManager.delete_game()
+	
 	scene = get_tree().get_current_scene()
 	camera = camera_scene.instance()
 	add_child(camera)
@@ -42,6 +44,7 @@ func _ready():
 	load_scene()
 	
 func load_scene():
+	SaveManager.load_game()
 	if get_scene_name() == "Main":
 		load_main()
 	else:
@@ -101,17 +104,15 @@ func change_scene(scene_name, path_name = "", reset = false):
 	last_path_name = path_name
 	scene.queue_free()
 	get_tree().get_root().remove_child(scene)
-	
-	if reset:
-		#player.set_active(false)
-		#pet.set_active(false)
-		yield(get_tree(), "idle_frame")
 		
 	scene = load("res://scenes/"+scene_name+".tscn").instance()
 	get_tree().get_root().add_child(scene)
 	get_tree().set_current_scene(scene)
 	
 	yield(get_tree(), "idle_frame")
+	if reset:
+		player.reset()
+		pet.reset()
 	load_scene()
 	
 	is_changing_scenes = false
@@ -162,7 +163,6 @@ func load_world():
 	pet.set_flip_h(player_spawner.flip_h)
 	camera.snap_position()
 	
-	SaveManager.load_game()
 	yield(get_tree(), "idle_frame")
 	yield(camera.set_fade(false), "completed")
 	#camera.set_enable_follow_smoothing(true)

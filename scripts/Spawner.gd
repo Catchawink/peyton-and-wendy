@@ -4,6 +4,7 @@ tool extends Node2D
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
+
 export var scene_name = ""
 export var path_name = ""
 export var flip_h = false

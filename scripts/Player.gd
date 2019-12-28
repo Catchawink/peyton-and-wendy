@@ -57,14 +57,19 @@ func animation_changed(animation):
 		speak("Wendy!", false)
 		emit_signal("called")
 
+var hand_position = Vector2(0,0)
+
 func update_hand():
-	var hand_position = animations[$AnimatedSprite.animation][$AnimatedSprite.frame]
+	hand_position = animations[$AnimatedSprite.animation][$AnimatedSprite.frame]
 	if hand_position == Vector2(-1,-1):
+		hand_position = get_center_pos()
 		$Hand.visible = false
 	else:
 		$Hand.visible = true
 		hand_position += Vector2(2,1)+$AnimatedSprite.offset
-		$Hand.position = Vector2(hand_position.x*get_flip_sign(is_flipped), hand_position.y)
+		hand_position = Vector2(hand_position.x*get_flip_sign(is_flipped), hand_position.y)
+		hand_position += global_position
+	$Hand.global_position = hand_position
 	#$Hand.scale = Vector2(get_flip_sign(is_flipped), 1)
 	for item in $Hand.get_children():
 		item.get_node("Sprite").set_flip_h(is_flipped)
@@ -84,7 +89,7 @@ func pickup(item):
 	if !is_speaking:
 		yield(animate_override("pickup", .5), "completed")
 
-	GameManager.inventory.add_item(item)
+	GameManager.inventory.add_item(pickup_item)
 	pickup_item = null
 	
 func item_added(item):
@@ -94,47 +99,51 @@ func item_added(item):
 	update_hand()
 
 var using_inventory = false
+
+var current_interactable
 var interactables = []
 
 func register(interactable):
 	interactables.append(interactable)
+	update_interactables()
 
 func deregister(interactable):
+	interactable.set_focus(false)
 	interactables.erase(interactable)
+	update_interactables()
 	
-func get_interactable():
+func update_interactables():
 	var max_priority = -1
-	var current_interactable
+	current_interactable = null
 	for interactable in interactables:
 		if interactable.priority > max_priority:
 			max_priority = interactable.priority
 			current_interactable = interactable
-	return current_interactable
+	for interactable in interactables:
+		interactable.set_focus(interactable == current_interactable)
 	
 func process_input(delta):
 	if is_input_locked:
 		return
-		
+
 	if Input.is_action_just_pressed("ui_examine"):
-		var interactable = get_interactable()
-		if interactable:
-			interactable.start_use()
+		if current_interactable:
+			current_interactable.start_use()
 		else:
 			GameManager.inventory.start_use()
 	if Input.is_action_just_released("ui_examine"):
-		var interactable = get_interactable()
-		if interactable:
-			interactable.start_use()
+		if current_interactable:
+			current_interactable.stop_use()
 		else:
 			GameManager.inventory.stop_use()	
 			
 	if Input.is_action_just_pressed("ui_inventory"):
-		using_inventory = !using_inventory
+		using_inventory = true#!using_inventory
 		GameManager.inventory.set_active(using_inventory)
 		
-	#if Input.is_action_just_released("ui_inventory"):
-	#	using_inventory = false
-	#	GameManager.inventory.set_active(using_inventory)
+	if Input.is_action_just_released("ui_inventory"):
+		using_inventory = false
+		GameManager.inventory.set_active(using_inventory)
 		
 	if using_inventory:
 		if Input.is_action_just_pressed("ui_right"):
