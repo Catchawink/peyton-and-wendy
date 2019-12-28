@@ -11,13 +11,12 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_group_": true
 }
-world_size = Vector2( 2000, 2000 )
 
-[node name="Stats" type="CanvasLayer" parent="." instance=ExtResource( 2 )]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="Foreground" type="CanvasLayer" parent="."]
+[node name="Stats" parent="CanvasLayer" instance=ExtResource( 2 )]
 
-[node name="Black" type="ColorRect" parent="Foreground"]
+[node name="Black" type="ColorRect" parent="CanvasLayer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color( 0, 0, 0, 0 )

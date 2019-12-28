@@ -6,11 +6,8 @@ var max_distance = 10000
 const leash_distance = 32
 const aware_distance = 48
 
-var can_taunt = false
-var taunt_wait_time = 0
-var taunt_wait = 2
-
-func _ready():
+func init():
+	.init()
 	ideal_distance = max_distance
 	pass
 	
@@ -40,13 +37,6 @@ func process_input(delta):
 		return
 	#if Input.is_action_just_pressed("ui_down"):
 	#	speak("Greetings!\nHEHEHEH!")
-
-	if can_taunt:
-		taunt_wait_time += delta
-		if taunt_wait_time >= taunt_wait:
-			taunt_wait_time = 0
-			taunt_wait = rand_range(3, 10)
-			taunt()
 		
 	var enemy = null
 	

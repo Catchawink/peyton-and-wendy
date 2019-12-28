@@ -4,16 +4,25 @@ var arrow
 func _ready():
 	$Label.connect("resized", self, "update_dimensions")
 	arrow = $Label/MarginContainer/Arrow
-	clear()
+	silence()
 	
 var current_id = 0
 
-func clear():
+func silence():
+	current_id += 1
+	is_speaking = false
 	$Label.set_text("")
+	yield(get_tree(), "idle_frame")
 	self.visible = false
 	arrow.visible = false
-
+	
+const line_limt = 12
+	
+var is_speaking = false
+			
 func speak(text, use_input = true):
+	is_speaking = true
+	text = GameManager.auto_indent(text)
 	arrow.visible = false
 	text = text.to_upper()
 	self.visible = true
@@ -41,15 +50,13 @@ func speak(text, use_input = true):
 		yield(get_tree().create_timer(.5), "timeout")
 		if current_id != id:
 			return
+		arrow.visible = true
+		arrow.visible = false
+		shrink_text(4)
 	$Label.set_text("")
-	"""
-	while len($Label.text) > 0:
-		shrink_text(1)
-		yield(get_tree().create_timer(.01), "timeout")
-		if current_id != id:
-			return
-	"""
+
 	self.visible = false
+	is_speaking = false
 	arrow.get_node("AnimationPlayer").stop()
 	
 func shrink_text(count):

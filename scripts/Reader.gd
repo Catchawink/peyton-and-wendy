@@ -1,17 +1,22 @@
-tool extends Node2D
+extends CenterContainer
 
 
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
-export var flip_h = false
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
 
-
+func read(text):
+	$Label.set_text(GameManager.auto_indent(text, 25))
+	visible = true
+	
+func clear():
+	$Label.set_text("")
+	visible = false
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	$Sprite.set_flip_h(flip_h)
-	pass
+#func _process(delta):
+#	pass

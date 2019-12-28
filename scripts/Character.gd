@@ -1,19 +1,18 @@
 extends KinematicBody2D
 
-const SPEED = 60
+const SPEED = 70
 const GRAVITY = 10
 const JUMP_POWER = 160
 const FLOOR = Vector2(0, -1)
 
-const step_volume = -13
+var step_time = 0
+var step_wait = .2
+const step_volume = -25
+var step_pitch = 1
 
 var velocity = Vector2()
 var on_ground = false
 var crouching = false
-
-var run_time = 0
-var step_wait = .2
-var step_pitch = 1.25
 
 var play_steps = false
 var is_horizontal = false
@@ -26,13 +25,24 @@ var override_animation = null
 onready var speech_bubble_scene = preload("res://scenes/ui/SpeechBubble.tscn")
 var speech_bubble
 
-var height = 16
+var can_taunt = false
+var taunt_wait_time = 0
+var taunt_wait = 2
+var taunt_pitch = 1
+
+export var height = 16
+var type
+
+signal died
 
 func set_flip_h(value):
 	$AnimatedSprite.set_flip_h(value)
 
 func get_center_pos():
-	return position+Vector2(0,-height/2)
+	return global_position+Vector2(0,-height/2)
+	
+func get_top_pos():
+	return global_position+Vector2(0,-height)	
 	
 func get_nearby_objects(distance):
 	var circle = CircleShape2D.new()
@@ -44,15 +54,25 @@ func get_nearby_objects(distance):
 	var results = state.intersect_shape(params)
 	return results
 	
+var is_initialized = false
+
 func _ready():
+	if !is_initialized:
+		init()
+		is_initialized = true
+	
+func init():
+	default_health = health
+	taunt_pitch = $TauntPlayer.pitch_scale
 	speech_bubble = speech_bubble_scene.instance()
 	add_child(speech_bubble)
-	speech_bubble.set_position(Vector2(13,-25))
+	speech_bubble.set_global_position(get_top_pos()+Vector2(13,-9))
 	
-func speak(text,  use_input = true):
-	is_speaking = true
+func speak(text, use_input = true):
 	yield(speech_bubble.speak(text, use_input), "completed")
-	is_speaking = false
+	
+func silence():
+	speech_bubble.silence()
 	
 func process_input(delta):
 	pass
@@ -75,12 +95,10 @@ func update_hand():
 	pass
 	
 func taunt():
+	$TauntPlayer.pitch_scale = rand_range(taunt_pitch-.1, taunt_pitch+.1)
 	$TauntPlayer.play()
-	animate_override("taunt")
+	yield(animate_override("taunt"), "completed")
 
-func pickup():
-	animate_override("pickup", 1)
-	
 func cancel_override():
 	override_animation = null
 	
@@ -101,10 +119,15 @@ func animate_override(animation, auto_stop = true, add_duration = 0):
 	
 var push = 0
 var player
+var health = 3
+var default_health
+
+func is_dead():
+	return health == 0
 
 func on_set_player():
 	pass
-
+	
 func _process(delta):
 	if not player:
 		var players = get_tree().get_nodes_in_group("players")
@@ -112,21 +135,41 @@ func _process(delta):
 			player = players[0]
 			on_set_player()
 
+func die():
+	health = 0
+	emit_signal("died")
+	pass
+
 func _physics_process(delta):
+	if !is_dead() and position.y > GameManager.world_rect.end.y:
+		die()
+		return
+			
+	if speech_bubble:
+		is_speaking = speech_bubble.is_speaking
+	
 	velocity.x = 0
 	
-	process_input(delta)
+	if can_taunt:
+		taunt_wait_time += delta
+		if taunt_wait_time >= taunt_wait:
+			taunt_wait_time = 0
+			taunt_wait = rand_range(3, 20)
+			taunt()
+			
+	if !is_dead():
+		process_input(delta)
 		
 	if play_steps:
 		if velocity.x != 0 and on_ground:
-			run_time += delta
-			if run_time >= step_wait:
+			step_time += delta
+			if step_time >= step_wait:
 				$StepPlayer.volume_db = rand_range(step_volume-5, step_volume+5)
 				$StepPlayer.pitch_scale = rand_range(step_pitch-.05, step_pitch+.05)
 				$StepPlayer.play()
-				run_time = 0
+				step_time = 0
 		else:
-			run_time = step_wait
+			step_time = step_wait
 	
 	if not override_animation:
 		if crouching:
@@ -161,8 +204,8 @@ func _physics_process(delta):
 	for index in get_slide_count():
 		var collision = get_slide_collision(index)
 		if collision.collider.is_in_group("bodies"):
-			#collision.collider.apply_impulse(collision.position - collision.collider.position, -collision.normal * push)
-			collision.collider.apply_central_impulse(-collision.normal * push)
+			collision.collider.apply_impulse(collision.position - collision.collider.position, -collision.normal * push)
+			#collision.collider.apply_central_impulse(-collision.normal * push)
 			# Depending on your character's movement speed, adjust push_factor to
 			# something between 0 and 1.
 				

@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://items/leash.png" type="Texture" id=1]
+[ext_resource path="res://scripts/Item.gd" type="Script" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 2, 2 )
@@ -10,7 +11,9 @@ extents = Vector2( 2, 2 )
 "items",
 ]]
 position = Vector2( -100, 158 )
+collision_layer = 16
 mass = 10.0
+script = ExtResource( 2 )
 __meta__ = {
 "_edit_group_": true
 }

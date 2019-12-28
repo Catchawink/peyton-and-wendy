@@ -26,7 +26,9 @@ animations = [ {
 "speed": 8.0
 } ]
 
-[node name="WizardHorse" type="KinematicBody2D"]
+[node name="WizardHorse" type="KinematicBody2D" groups=[
+"characters",
+]]
 position = Vector2( -5, 28 )
 z_index = 1
 collision_layer = 2
@@ -42,7 +44,6 @@ shape = SubResource( 1 )
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
 animation = "idle"
-frame = 1
 playing = true
 centered = false
 offset = Vector2( -16, -32 )

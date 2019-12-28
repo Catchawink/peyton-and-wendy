@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://peyton/sprite_00.png" type="Texture" id=1]
-[ext_resource path="res://scenes/helpers/Spawner.gd" type="Script" id=2]
+[ext_resource path="res://scripts/Spawner.gd" type="Script" id=2]
 
 [node name="Spawner" type="Node2D" groups=[
 "spawners",

@@ -1,6 +1,6 @@
 extends "Character.gd"
 
-func _ready():
+func init():
 	pass
 
 func process_input(delta):

@@ -56,8 +56,10 @@ shape = SubResource( 1 )
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
 animation = "run"
-frame = 8
+frame = 5
 playing = true
 
 [node name="StepPlayer" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 3 )
+
+[node name="TauntPlayer" type="AudioStreamPlayer2D" parent="."]

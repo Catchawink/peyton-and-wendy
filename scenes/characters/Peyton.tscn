@@ -10,19 +10,19 @@
 [ext_resource path="res://peyton/sprite_01.png" type="Texture" id=8]
 [ext_resource path="res://peyton/sprite_03.png" type="Texture" id=9]
 [ext_resource path="res://peyton/sprite_07.png" type="Texture" id=10]
-[ext_resource path="res://items/leash.png" type="Texture" id=11]
+[ext_resource path="res://sfx/jump.wav" type="AudioStream" id=11]
 [ext_resource path="res://scripts/Player.gd" type="Script" id=12]
-[ext_resource path="res://peyton/sprite_06.png" type="Texture" id=13]
+[ext_resource path="res://sfx/pickup.wav" type="AudioStream" id=14]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 5, 9 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
-"frames": [ ExtResource( 5 ), ExtResource( 9 ) ],
+"frames": [ ExtResource( 9 ), ExtResource( 5 ) ],
 "loop": true,
 "name": "call",
-"speed": 4.0
+"speed": 3.0
 }, {
 "frames": [ ExtResource( 6 ), ExtResource( 8 ) ],
 "loop": true,
@@ -34,28 +34,29 @@ animations = [ {
 "name": "crouch",
 "speed": 5.0
 }, {
+"frames": [ ExtResource( 10 ) ],
+"loop": false,
+"name": "pickup",
+"speed": 3.0
+}, {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "fall",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 1 ), ExtResource( 3 ), ExtResource( 7 ), ExtResource( 2 ) ],
 "loop": true,
 "name": "run",
 "speed": 12.0
 }, {
-"frames": [ ExtResource( 6 ) ],
+"frames": [ ExtResource( 1 ) ],
 "loop": true,
 "name": "jump",
 "speed": 5.0
-}, {
-"frames": [ ExtResource( 6 ) ],
-"loop": true,
-"name": "fall",
-"speed": 5.0
-}, {
-"frames": [ ExtResource( 13 ), ExtResource( 10 ) ],
-"loop": false,
-"name": "pickup",
-"speed": 6.0
 } ]
 
 [node name="Peyton" type="KinematicBody2D" groups=[
+"characters",
 "players",
 ]]
 z_index = 20
@@ -71,8 +72,7 @@ shape = SubResource( 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
-animation = "pickup"
-frame = 1
+animation = "fall"
 playing = true
 centered = false
 offset = Vector2( -16, -32 )
@@ -80,15 +80,12 @@ offset = Vector2( -16, -32 )
 [node name="StepPlayer" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 4 )
 
+[node name="PickupPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 14 )
+
+[node name="JumpPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 11 )
+
 [node name="Hand" type="Node2D" parent="."]
 
-[node name="leash" type="Sprite" parent="Hand"]
-visible = false
-texture = ExtResource( 11 )
-
-[node name="Line2D" type="Line2D" parent="Hand/leash"]
-z_index = -10
-z_as_relative = false
-points = PoolVector2Array( 0, 0, 0, 0 )
-width = 1.0
-default_color = Color( 1, 0.345098, 0.545098, 1 )
+[node name="TauntPlayer" type="AudioStreamPlayer2D" parent="."]
