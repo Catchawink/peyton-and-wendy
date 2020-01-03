@@ -8,12 +8,9 @@ extents = Vector2( 10, 8 )
 [node name="Box" type="RigidBody2D" groups=[
 "bodies",
 ]]
-z_index = 1
+z_index = 10
 collision_mask = 7
-mass = 10.0
 continuous_cd = 1
-contacts_reported = 10
-can_sleep = false
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )

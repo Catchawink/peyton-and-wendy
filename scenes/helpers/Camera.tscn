@@ -3,7 +3,7 @@
 [ext_resource path="res://scripts/Camera2D.gd" type="Script" id=1]
 [ext_resource path="res://scenes/ui/Stats.tscn" type="PackedScene" id=2]
 
-[node name="Camera2D" type="Camera2D"]
+[node name="Camera" type="Camera2D"]
 current = true
 smoothing_speed = 4.0
 editor_draw_screen = false
@@ -12,14 +12,28 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="StatsCanvas" type="CanvasLayer" parent="."]
 
-[node name="Stats" parent="CanvasLayer" instance=ExtResource( 2 )]
+[node name="Stats" parent="StatsCanvas" instance=ExtResource( 2 )]
 
-[node name="Black" type="ColorRect" parent="CanvasLayer"]
+[node name="BlackCanvas" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="Black" type="ColorRect" parent="BlackCanvas"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color( 0, 0, 0, 0 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TintCanvas" type="CanvasLayer" parent="."]
+layer = 95
+
+[node name="Tint" type="ColorRect" parent="TintCanvas"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.101961, 0.113725, 0.2, 0.368627 )
 __meta__ = {
 "_edit_use_anchors_": false
 }

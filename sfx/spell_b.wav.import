@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/spell_b.wav-99db27a1c50f2e609dd62d9a60d4f291.sample"
+
+[deps]
+
+source_file="res://sfx/spell_b.wav"
+dest_files=[ "res://.import/spell_b.wav-99db27a1c50f2e609dd62d9a60d4f291.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

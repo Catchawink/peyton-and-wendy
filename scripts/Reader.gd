@@ -1,4 +1,4 @@
-extends CenterContainer
+extends PanelContainer
 
 
 # Declare member variables here. Examples:
@@ -8,16 +8,18 @@ extends CenterContainer
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	clear(true)
 	pass # Replace with function body.
 
 func read(text):
 	$StartPlayer.play()
-	$Label.set_text(GameManager.auto_indent(text, 25))
+	$Label.set_text(GameManager.auto_indent(text.to_upper(), 25))
 	visible = true
 	
-func clear():
+func clear(immediate=false):
 	$Label.set_text("")
-	$StopPlayer.play()
+	if !immediate:
+		$StopPlayer.play()
 	visible = false
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):

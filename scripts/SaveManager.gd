@@ -10,10 +10,11 @@ const auto_save = ["name", "rotation_degrees"]
 func _ready():
 	pass
 	
-func get_node_data(node):
+func get_node_data(node, use_parent = true):
 	var data = {}
 	var properties = node.get_property_list()
-	data["parent"] = node.get_parent().get_path()
+	if use_parent:
+		data["parent"] = node.get_parent().get_path()
 	data["filename"] = node.get_filename()
 	data["pos_x"] = node.position.x
 	data["pos_y"] = node.position.y
@@ -34,10 +35,10 @@ func get_node_data(node):
 func get_scene_data():
 	return get_nodes_data(get_tree().get_nodes_in_group("saved"))
 
-func get_nodes_data(nodes):
+func get_nodes_data(nodes, use_parent = true):
 	var data = []
 	for node in nodes:
-		data.append(get_node_data(node))
+		data.append(get_node_data(node, use_parent))
 	return data
 	
 func delete_game():
@@ -48,7 +49,7 @@ func save_game():
 	var data = get_data()
 	var item_data = []
 	data["Inventory"] = {}
-	data["Inventory"]["items"] = get_nodes_data(GameManager.inventory.items)
+	data["Inventory"]["items"] = get_nodes_data(GameManager.inventory.items, false)
 	data["Inventory"]["current_item_index"] = GameManager.inventory.current_item_index
 	data[GameManager.get_scene_name()] = get_scene_data()
 	set_data(data)
@@ -90,9 +91,11 @@ func set_node_data(data):
 			#node.get_script().set_source_code(load(value).get_source_code())
 			#node.get_script().reload(true)
 		else:
-			node.set(property_name, value)
-	get_node(data["parent"]).add_child(node)
-	
+			node.set_deferred(property_name, value)
+	if "parent" in data:
+		get_node(data["parent"]).call_deferred("add_child",node)
+	else:
+		GameManager.scene.call_deferred("add_child",node)
 	return node
 		
 func unsave(node):
@@ -111,10 +114,12 @@ func load_game():
 
 		for item_data in data["Inventory"]["items"]:
 			var item = unsave(set_node_data(item_data))
+			item.set_physics_active(false)
+			yield(get_tree(), "idle_frame")
 			GameManager.inventory.add_item(item)
 		
-		GameManager.inventory.select_item_by_index(int(data["Inventory"]["current_item_index"]))
-			
+		#GameManager.inventory.select_item_by_index(int(data["Inventory"]["current_item_index"]))
+		
 	if data.has(GameManager.get_scene_name()):
 		var scene_data = data[GameManager.get_scene_name()]
 			

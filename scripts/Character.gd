@@ -1,20 +1,20 @@
-extends KinematicBody2D
+class_name Character extends Stats
 
-const SPEED = 70
+export var speed = 70
 const GRAVITY = 10
 const JUMP_POWER = 160
 const FLOOR = Vector2(0, -1)
 
-var step_time = 0
-var step_wait = .2
-const step_volume = -25
-var step_pitch = 1
+var run_frames = []
+export var attack_frame = 0
+var run_volume = 0
+var run_pitch = 1
 
 var velocity = Vector2()
 var on_ground = false
 var crouching = false
 
-var play_steps = false
+var play_run = false
 var is_horizontal = false
 
 var is_speaking = false
@@ -30,16 +30,34 @@ var taunt_wait_time = 0
 var taunt_wait = 2
 var taunt_pitch = 1
 
+var can_attack = false
+var attack_wait_time = 0
+var attack_wait = 2
+
 export var height = 16
+export var width = 16
 var type
 
 signal died
 
 var is_active = true
+var is_physics_active = true
+var default_collision_mask
+var default_collision_layer
 
 func set_active(value):
 	is_active = value
+	set_physics_active(is_active)
 	visible = is_active
+	
+func set_physics_active(value):
+	is_physics_active = value
+	if is_physics_active:
+		set_collision_mask(default_collision_mask)
+		set_collision_layer(default_collision_layer)
+	else:
+		set_collision_mask(0)
+		set_collision_layer(0)
 
 func set_flip_h(value):
 	$AnimatedSprite.set_flip_h(value)
@@ -50,6 +68,27 @@ func get_center_pos():
 func get_top_pos():
 	return global_position+Vector2(0,-height)	
 	
+func get_bottom_pos():
+	return global_position
+	
+var is_attacking = false
+
+func attack():
+	is_attacking = true
+	animate_override("attack")
+	yield(wait_for_frame(attack_frame), "completed")
+	for result in get_front_objects():
+		var object = result.collider
+		if object != self and object.has_method("damage"):
+			object.damage(1)
+	yield($AnimatedSprite, "animation_finished")
+	is_attacking = false
+	pass
+	
+func damage(amount):
+	print(name + " lost " + str(amount) + " heart(s).")
+	health -= amount
+	
 func get_nearby_objects(distance):
 	var circle = CircleShape2D.new()
 	circle.set_radius(distance)
@@ -57,22 +96,31 @@ func get_nearby_objects(distance):
 	params.set_shape(circle)
 	params.set_transform(get_transform())  #update position object
 	var state = get_world_2d().get_direct_space_state()
-	var results = state.intersect_shape(params)
+	var results = state.intersect_shape(params,100)
 	return results
 	
 var is_initialized = false
 
 func _ready():
-	if !is_initialized:
+	if !is_initialized and GameManager.is_active:
 		init()
 		is_initialized = true
 	
 func init():
+	default_collision_mask = get_collision_mask()
+	default_collision_layer = get_collision_layer()
+	$AnimatedSprite.connect("animation_finished", self, "animation_finished")
+	$AnimatedSprite.connect("frame_changed", self, "frame_changed")
+	run_volume = $StepPlayer.volume_db
+	run_pitch = $StepPlayer.pitch_scale
 	default_health = health
 	taunt_pitch = $TauntPlayer.pitch_scale
 	speech_bubble = speech_bubble_scene.instance()
 	add_child(speech_bubble)
-	speech_bubble.set_global_position(get_top_pos()+Vector2(13,-9))
+	speech_bubble.set_global_position(get_top_pos()+Vector2(14,-7))
+	
+func animation_finished():
+	pass
 	
 func speak(text, use_input = true):
 	yield(speech_bubble.speak(text, use_input), "completed")
@@ -94,7 +142,9 @@ func look_at(object):
 	if abs(dist_x) > 8:
 		$AnimatedSprite.flip_h = dist_x < 0
 	
-func get_flip_sign(value):
+func get_flip_sign(value=null):
+	if value == null:
+		value = is_flipped
 	return (-1 if value else 1)
 
 func update_hand():
@@ -108,17 +158,22 @@ func taunt():
 func cancel_override():
 	override_animation = null
 	
+func frame_changed():
+	if $AnimatedSprite.animation == "run" and run_frames.has($AnimatedSprite.frame):
+		$StepPlayer.volume_db = rand_range(run_volume-5, run_volume+5)
+		$StepPlayer.pitch_scale = rand_range(run_pitch-.05, run_pitch+.05)
+		$StepPlayer.play()
+	pass
+	
+func wait_for_frame(frame):
+	yield(get_tree(), "idle_frame")
+	while $AnimatedSprite.frame != frame:
+		yield($AnimatedSprite, "frame_changed")
+	
 func animate_override(animation, auto_stop = true, add_duration = 0):
 	animate(animation)
 	override_animation = animation
-	if not auto_stop:
-		return
-	var frame_duration = 1/$AnimatedSprite.frames.get_animation_speed($AnimatedSprite.animation)
-	while $AnimatedSprite.frame < $AnimatedSprite.frames.get_frame_count($AnimatedSprite.animation)-1:
-		yield(get_tree().create_timer(frame_duration), "timeout")
-		if override_animation != animation:
-			return
-	yield(get_tree().create_timer(frame_duration+add_duration), "timeout")
+	yield($AnimatedSprite, "animation_finished")
 	if override_animation != animation:
 		return
 	override_animation = null
@@ -145,12 +200,26 @@ func _process(delta):
 			on_set_player()
 
 func die():
+	if is_dead():
+		return
 	health = 0
 	emit_signal("died")
 	pass
+	
+var colliders = []
+
+func get_front_objects():
+	var circle = CircleShape2D.new()
+	circle.set_radius(4)
+	var params = Physics2DShapeQueryParameters.new()
+	params.set_shape(circle)
+	params.set_transform(Transform2D(0, get_center_pos()+Vector2((width/2)*get_flip_sign(), 0)))  #update position object
+	var state = get_world_2d().get_direct_space_state()
+	var results = state.intersect_shape(params,32)
+	return results
 
 func _physics_process(delta):
-	if not is_active:
+	if not is_active or !GameManager.is_active:
 		velocity = Vector2(0,0)
 		return
 		
@@ -163,6 +232,13 @@ func _physics_process(delta):
 	
 	velocity.x = 0
 	
+	if can_attack and !is_attacking:
+		attack_wait_time += delta
+		if attack_wait_time >= attack_wait:
+			attack_wait_time = 0
+			attack_wait = rand_range(.05, .5)
+			attack()
+			
 	if can_taunt:
 		taunt_wait_time += delta
 		if taunt_wait_time >= taunt_wait:
@@ -172,17 +248,6 @@ func _physics_process(delta):
 			
 	if !is_dead():
 		process_input(delta)
-		
-	if play_steps:
-		if velocity.x != 0 and on_ground:
-			step_time += delta
-			if step_time >= step_wait:
-				$StepPlayer.volume_db = rand_range(step_volume-5, step_volume+5)
-				$StepPlayer.pitch_scale = rand_range(step_pitch-.05, step_pitch+.05)
-				$StepPlayer.play()
-				step_time = 0
-		else:
-			step_time = step_wait
 	
 	if not override_animation:
 		if crouching:
@@ -212,13 +277,19 @@ func _physics_process(delta):
 	else:
 		on_ground = false
 		
-	velocity = move_and_slide(velocity, FLOOR, false, 4, PI/4, false)
-	
-	for index in get_slide_count():
-		var collision = get_slide_collision(index)
-		if collision.collider.is_in_group("bodies"):
-			collision.collider.apply_impulse(collision.position - collision.collider.position, -collision.normal * push)
-			#collision.collider.apply_central_impulse(-collision.normal * push)
-			# Depending on your character's movement speed, adjust push_factor to
-			# something between 0 and 1.
+	if is_physics_active:
+		velocity = move_and_slide(velocity, FLOOR, false, 4, PI/4, false)
+		
+		var new_colliders = []
+		for index in get_slide_count():
+			var collision = get_slide_collision(index)
+			if collision.collider.is_in_group("bodies"):
+				if not collision.collider in colliders:
+					collision.collider.emit_signal("body_entered", self)
+				collision.collider.apply_impulse(collision.position - collision.collider.position, -collision.normal * push)
+				new_colliders.append(collision.collider)
+				#collision.collider.apply_central_impulse(-collision.normal * push)
+				# Depending on your character's movement speed, adjust push_factor to
+				# something between 0 and 1.
+		colliders = new_colliders
 				

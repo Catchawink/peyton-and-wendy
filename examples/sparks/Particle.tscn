@@ -1,0 +1,48 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://examples/sparks/Particle.gd" type="Script" id=1]
+[ext_resource path="res://examples/sparks/assets/light_01.png" type="Texture" id=2]
+[ext_resource path="res://ui/rain.png" type="Texture" id=3]
+[ext_resource path="res://examples/sparks/assets/star_09.png" type="Texture" id=4]
+
+[sub_resource type="PhysicsMaterial" id=1]
+friction = 0.6
+bounce = 0.6
+
+[sub_resource type="Gradient" id=2]
+offsets = PoolRealArray( 0, 0.150538, 0.38172, 0.744624, 1 )
+colors = PoolColorArray( 1, 0.996643, 0.914063, 1, 0.957031, 0.920231, 0.0149536, 1, 1, 0.679688, 0, 1, 0.960938, 0.180293, 0.0525513, 1, 0, 0, 0, 0 )
+
+[sub_resource type="CircleShape2D" id=3]
+radius = 1.5
+
+[node name="Particle" type="RigidBody2D"]
+collision_layer = 0
+mode = 2
+mass = 0.01
+physics_material_override = SubResource( 1 )
+gravity_scale = 0.0
+linear_damp = 2.0
+script = ExtResource( 1 )
+gradient = SubResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 3 )
+
+[node name="Light2D" type="Light2D" parent="."]
+texture = ExtResource( 2 )
+texture_scale = 0.4
+
+[node name="SparkSprite" type="Node2D" parent="."]
+show_behind_parent = true
+
+[node name="Tail" type="Sprite" parent="SparkSprite"]
+rotation = 1.5708
+texture = ExtResource( 3 )
+centered = false
+
+[node name="Star" type="Sprite" parent="SparkSprite"]
+visible = false
+texture = ExtResource( 4 )
+
+[node name="Modulate" type="Tween" parent="."]

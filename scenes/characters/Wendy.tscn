@@ -13,7 +13,7 @@
 [ext_resource path="res://scripts/Pet.gd" type="Script" id=11]
 [ext_resource path="res://wendy/wendy_03.png" type="Texture" id=12]
 [ext_resource path="res://wendy/wendy_05.png" type="Texture" id=13]
-[ext_resource path="res://sfx/bark.wav" type="AudioStream" id=14]
+[ext_resource path="res://sfx/dog_bark.wav" type="AudioStream" id=14]
 [ext_resource path="res://particles/poof/poof_6.png" type="Texture" id=15]
 [ext_resource path="res://particles/poof/poof_4.png" type="Texture" id=16]
 [ext_resource path="res://particles/poof/poof_0.png" type="Texture" id=17]
@@ -32,11 +32,6 @@ animations = [ {
 "name": "idle",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 5 ), ExtResource( 6 ) ],
-"loop": false,
-"name": "taunt",
-"speed": 10.0
-}, {
 "frames": [ ExtResource( 13 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 9 ) ],
 "loop": true,
 "name": "crouch",
@@ -45,6 +40,11 @@ animations = [ {
 "frames": [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 12 ), ExtResource( 4 ) ],
 "loop": true,
 "name": "run",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( 5 ), ExtResource( 6 ) ],
+"loop": false,
+"name": "taunt",
 "speed": 10.0
 } ]
 
@@ -59,12 +59,13 @@ animations = [ {
 [node name="Wendy" type="KinematicBody2D" groups=[
 "pets",
 ]]
-z_index = 30
+z_index = 50
 collision_layer = 2
 script = ExtResource( 11 )
 __meta__ = {
 "_edit_group_": true
 }
+height = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -2 )
@@ -73,18 +74,21 @@ shape = SubResource( 1 )
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
 animation = "run"
-frame = 2
+frame = 1
 playing = true
 centered = false
 offset = Vector2( -16, -32 )
 
 [node name="StepPlayer" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 1 )
+volume_db = -5.0
+bus = "SFX"
 
 [node name="TauntPlayer" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 14 )
-volume_db = -5.0
+volume_db = -15.0
 pitch_scale = 1.6
+bus = "SFX"
 
 [node name="Poof" type="AnimatedSprite" parent="."]
 visible = false

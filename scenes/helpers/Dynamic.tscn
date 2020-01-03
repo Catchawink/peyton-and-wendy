@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="ImageTexture" id=1]
+
+[node name="Dynamic" type="Node2D"]
+
+[node name="Ladder" type="Sprite" parent="."]
+texture = SubResource( 1 )
+
+[node name="Door" type="Sprite" parent="."]
+texture = SubResource( 1 )
+
+[node name="Sign" type="Sprite" parent="."]
+texture = SubResource( 1 )
+
+[node name="Switch" type="Sprite" parent="."]
+texture = SubResource( 1 )
+
+[node name="Edge" type="Sprite" parent="."]
+texture = SubResource( 1 )

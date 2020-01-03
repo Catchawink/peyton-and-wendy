@@ -1,7 +1,8 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=45 format=2]
 
+[ext_resource path="res://sfx/squish.wav" type="AudioStream" id=1]
 [ext_resource path="res://scripts/Enemy.gd" type="Script" id=2]
-[ext_resource path="res://sfx/step_rock.wav" type="AudioStream" id=3]
+[ext_resource path="res://slime/slime_38.png" type="Texture" id=3]
 [ext_resource path="res://slime/slime_05.png" type="Texture" id=4]
 [ext_resource path="res://slime/slime_23.png" type="Texture" id=5]
 [ext_resource path="res://slime/slime_00.png" type="Texture" id=6]
@@ -22,6 +23,25 @@
 [ext_resource path="res://slime/slime_01.png" type="Texture" id=21]
 [ext_resource path="res://slime/slime_26.png" type="Texture" id=22]
 [ext_resource path="res://slime/slime_04.png" type="Texture" id=23]
+[ext_resource path="res://slime/slime_33.png" type="Texture" id=24]
+[ext_resource path="res://slime/slime_35.png" type="Texture" id=25]
+[ext_resource path="res://slime/slime_37.png" type="Texture" id=26]
+[ext_resource path="res://slime/slime_34.png" type="Texture" id=27]
+[ext_resource path="res://slime/slime_39.png" type="Texture" id=28]
+[ext_resource path="res://slime/slime_30.png" type="Texture" id=29]
+[ext_resource path="res://slime/slime_31.png" type="Texture" id=30]
+[ext_resource path="res://slime/slime_32.png" type="Texture" id=31]
+[ext_resource path="res://slime/slime_36.png" type="Texture" id=32]
+[ext_resource path="res://slime/slime_45.png" type="Texture" id=33]
+[ext_resource path="res://slime/slime_47.png" type="Texture" id=34]
+[ext_resource path="res://slime/slime_46.png" type="Texture" id=35]
+[ext_resource path="res://slime/slime_43.png" type="Texture" id=36]
+[ext_resource path="res://slime/slime_44.png" type="Texture" id=37]
+[ext_resource path="res://slime/slime_42.png" type="Texture" id=38]
+[ext_resource path="res://slime/slime_49.png" type="Texture" id=39]
+[ext_resource path="res://slime/slime_40.png" type="Texture" id=40]
+[ext_resource path="res://slime/slime_41.png" type="Texture" id=41]
+[ext_resource path="res://slime/slime_48.png" type="Texture" id=42]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 7, 4 )
@@ -37,6 +57,16 @@ animations = [ {
 "loop": true,
 "name": "run",
 "speed": 15.0
+}, {
+"frames": [ ExtResource( 40 ), ExtResource( 41 ), ExtResource( 38 ), ExtResource( 36 ), ExtResource( 37 ), ExtResource( 33 ), ExtResource( 35 ), ExtResource( 34 ), ExtResource( 42 ), ExtResource( 39 ) ],
+"loop": false,
+"name": "die",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 29 ), ExtResource( 30 ), ExtResource( 31 ), ExtResource( 24 ), ExtResource( 27 ), ExtResource( 25 ), ExtResource( 32 ), ExtResource( 26 ), ExtResource( 3 ), ExtResource( 28 ) ],
+"loop": true,
+"name": "attack",
+"speed": 10.0
 } ]
 
 [node name="Slime" type="KinematicBody2D" groups=[
@@ -48,6 +78,7 @@ script = ExtResource( 2 )
 __meta__ = {
 "_edit_group_": true
 }
+speed = 25
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -4 )
@@ -55,13 +86,15 @@ shape = SubResource( 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
-animation = "run"
-frame = 4
+animation = "die"
+frame = 9
 playing = true
 centered = false
 offset = Vector2( -16, -32 )
 
 [node name="StepPlayer" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource( 3 )
+stream = ExtResource( 1 )
+volume_db = -17.0
+pitch_scale = 1.5
 
 [node name="TauntPlayer" type="AudioStreamPlayer2D" parent="."]

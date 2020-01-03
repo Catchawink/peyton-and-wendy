@@ -1,9 +1,10 @@
-tool extends Control
+extends Node2D
 
 var arrow
+var label
 func _ready():
-	$Label.connect("resized", self, "update_dimensions")
-	arrow = $Label/MarginContainer/Arrow
+	label = $Container/Label
+	arrow = $Container/Label/MarginContainer/Arrow
 	silence()
 	
 var current_id = 0
@@ -11,7 +12,7 @@ var current_id = 0
 func silence():
 	current_id += 1
 	is_speaking = false
-	$Label.set_text("")
+	label.set_text("")
 	yield(get_tree(), "idle_frame")
 	self.visible = false
 	arrow.visible = false
@@ -32,12 +33,12 @@ func speak(text, use_input = true):
 	for text_char in text:
 		display_text += text_char
 		$Voice.play()
-		$Label.set_text(display_text)
+		label.set_text(display_text)
 		yield(get_tree().create_timer(.05), "timeout")
 		if current_id != id:
 			return
 	if use_input:
-		$Label.set_text($Label.text+"    ")
+		label.set_text(label.text+"    ")
 		arrow.get_node("AnimationPlayer").play("Arrow")
 		arrow.visible = true
 		while not Input.is_action_pressed("ui_accept"):
@@ -47,26 +48,18 @@ func speak(text, use_input = true):
 		arrow.visible = false
 		shrink_text(4)
 	else:
-		yield(get_tree().create_timer(.5), "timeout")
+		var readingtime = len(text) / 15.00
+		yield(get_tree().create_timer(readingtime), "timeout")
 		if current_id != id:
 			return
 		arrow.visible = true
 		arrow.visible = false
 		shrink_text(4)
-	$Label.set_text("")
+	label.set_text("")
 
 	self.visible = false
 	is_speaking = false
 	arrow.get_node("AnimationPlayer").stop()
 	
 func shrink_text(count):
-	$Label.text = $Label.text.substr(0,len($Label.text)-count)
-	
-func _process(delta):
-	update_dimensions()
-			
-func update_dimensions():
-	if $Label.get_rect().size != $Label.get_combined_minimum_size() or $Label.get_rect().position != Vector2(-$Label.get_rect().size.x/2, -$Label.get_rect().size.y):
-		$Label.set_size($Label.get_combined_minimum_size())
-		$Label.set_position(Vector2(-$Label.get_rect().size.x/2, -$Label.get_rect().size.y))
-		yield(get_tree(), "idle_frame")
+	label.text = label.text.substr(0,len(label.text)-count)

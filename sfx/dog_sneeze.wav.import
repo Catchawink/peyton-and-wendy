@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/dog_sneeze.wav-01c3fc97b99c3ffe933e1acb5e794402.sample"
+
+[deps]
+
+source_file="res://sfx/dog_sneeze.wav"
+dest_files=[ "res://.import/dog_sneeze.wav-01c3fc97b99c3ffe933e1acb5e794402.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

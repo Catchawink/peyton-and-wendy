@@ -10,8 +10,7 @@ extents = Vector2( 4, 5 )
 "items",
 "saved",
 ]]
-z_index = 25
-z_as_relative = false
+z_index = 15
 collision_layer = 16
 mass = 10.0
 script = ExtResource( 2 )

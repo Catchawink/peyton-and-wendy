@@ -34,6 +34,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/godot-next/nodes/callback_delegator.gd"
 }, {
+"base": "Stats",
+"class": "Character",
+"language": "GDScript",
+"path": "res://scripts/Character.gd"
+}, {
 "base": "Reference",
 "class": "ClassType",
 "language": "GDScript",
@@ -124,6 +129,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/godot-next/global/singletons.gd"
 }, {
+"base": "KinematicBody2D",
+"class": "Stats",
+"language": "GDScript",
+"path": "res://scripts/Stats.gd"
+}, {
 "base": "Line2D",
 "class": "Trail2D",
 "language": "GDScript",
@@ -155,6 +165,7 @@ _global_script_class_icons={
 "BitFlag": "",
 "CSVFile": "",
 "CallbackDelegator": "",
+"Character": "",
 "ClassType": "",
 "Cycle": "res://addons/godot-next/icons/icon_cycle.svg",
 "EditorTools": "",
@@ -173,6 +184,7 @@ _global_script_class_icons={
 "ResourceCollection": "",
 "ResourceSet": "",
 "Singletons": "",
+"Stats": "",
 "Trail2D": "res://addons/godot-next/icons/icon_trail_2d.svg",
 "Trail3D": "res://addons/godot-next/icons/icon_trail_3d.svg",
 "TweenSequence": "",
@@ -192,6 +204,7 @@ config/icon="res://icon.png"
 
 GameManager="*res://scripts/GameManager.gd"
 SaveManager="*res://scripts/SaveManager.gd"
+SoundManager="*res://scripts/SoundManager.gd"
 
 [debug]
 
@@ -251,10 +264,14 @@ ui_restart={
  ]
 }
 
+[physics]
+
+2d/physics_engine="GodotPhysics"
+
 [rendering]
 
 quality/2d/gles2_use_nvidia_rect_flicker_workaround=true
 quality/2d/use_pixel_snap=true
-environment/default_clear_color=Color( 0.372549, 0.494118, 0.815686, 1 )
+environment/default_clear_color=Color( 0, 0, 0, 1 )
 environment/default_environment="res://default_env.tres"
 quality/dynamic_fonts/use_oversampling=false

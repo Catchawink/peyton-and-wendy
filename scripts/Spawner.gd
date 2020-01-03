@@ -23,3 +23,6 @@ func on_ready():
 func _process(delta):
 	$Sprite.set_flip_h(flip_h)
 	pass
+	
+func get_spawn_pos():
+	return global_position

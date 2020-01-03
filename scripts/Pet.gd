@@ -32,6 +32,15 @@ func is_player_visible():
 			return true
 	return false
 	
+func is_edge():
+	var space_state = get_world_2d().direct_space_state
+	var start_position = get_center_pos()+Vector2(get_flip_sign()*8,0)
+	var result = space_state.intersect_ray(start_position, start_position+Vector2(0, 16), [self], ~2)
+	
+	if result.empty():
+		return true
+	return false
+	
 func process_input(delta):
 	if not player:
 		return
@@ -56,9 +65,13 @@ func process_input(delta):
 	crouching = false
 	if dist_x > ideal_distance and is_player_visible():
 		if player.position.x < position.x:
-			velocity.x += -SPEED
+			$AnimatedSprite.flip_h = true
+			if !is_edge():
+				velocity.x += -speed
 		if player.position.x > position.x:
-			velocity.x += SPEED
+			$AnimatedSprite.flip_h = false
+			if !is_edge():
+				velocity.x += speed
 	else:
 		ideal_distance = max_distance
 		if enemy:

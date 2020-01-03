@@ -1,0 +1,151 @@
+[gd_scene load_steps=19 format=2]
+
+[ext_resource path="res://scenes/items/Edge.tscn" type="PackedScene" id=1]
+[ext_resource path="res://tilesets/bridge.png" type="Texture" id=2]
+[ext_resource path="res://sky/mountains/background.png" type="Texture" id=3]
+[ext_resource path="res://tilesets/Static.tres" type="TileSet" id=4]
+[ext_resource path="res://scenes/characters/Slime.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/helpers/Event.tscn" type="PackedScene" id=6]
+[ext_resource path="res://sfx/forest_ambience.wav" type="AudioStream" id=7]
+[ext_resource path="res://scenes/items/Door.tscn" type="PackedScene" id=8]
+[ext_resource path="res://tilesets/Dynamic.tres" type="TileSet" id=9]
+[ext_resource path="res://scripts/NodeTileMap.gd" type="Script" id=10]
+[ext_resource path="res://scenes/helpers/Spawner.tscn" type="PackedScene" id=12]
+[ext_resource path="res://bird/eagle-attack-1.png" type="Texture" id=13]
+[ext_resource path="res://scenes/characters/Skeleton.tscn" type="PackedScene" id=14]
+[ext_resource path="res://sky/morning/clouds.png" type="Texture" id=15]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 49, 2 )
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends \"res://scripts/Event.gd\"
+
+# Called when the node enters the scene tree for the first time.
+func execute():
+	yield(GameManager.player.speak(\"I wonder where I am...\", false), \"completed\")
+	pass
+"
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends \"res://scripts/Event.gd\"
+
+# Called when the node enters the scene tree for the first time.
+func execute():
+	yield(player.speak(\"What a long drop...\", false), \"completed\")
+	pass
+"
+
+[sub_resource type="GDScript" id=4]
+script/source = "extends \"res://scripts/Event.gd\"
+
+# Called when the node enters the scene tree for the first time.
+func execute():
+	yield(GameManager.player.speak(\"Wow, what a view...\", false), \"completed\")
+	pass
+"
+
+[node name="WizardHorseOutside" type="Node2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -100
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 3 )
+stretch_mode = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 15 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = ExtResource( 4 )
+cell_size = Vector2( 16, 16 )
+format = 1
+tile_data = PoolIntArray( 0, 1, 28, 589827, 0, 393230, 589830, 0, 393231, 589837, 0, 393232, 589838, 0, 327695, 589840, 0, 196619, 655360, 0, 8, 655361, 0, 8, 655362, 0, 8, 655363, 0, 8, 655364, 0, 8, 655365, 0, 8, 655366, 0, 65545, 655373, 0, 65544, 655374, 0, 8, 655375, 0, 8, 655376, 0, 8, 655377, 0, 8, 655378, 0, 8, 655379, 0, 8, 720896, 0, 65547, 720897, 0, 65547, 720898, 0, 65547, 720899, 0, 65547, 720900, 0, 65547, 720901, 0, 65547, 720902, 0, 65548, 720909, 0, 65546, 720910, 0, 65547, 720911, 0, 65547, 720912, 0, 65547, 720913, 0, 65547, 720914, 0, 65547, 720915, 0, 65547, 786432, 0, 65547, 786433, 0, 65547, 786434, 0, 65547, 786435, 0, 65547, 786436, 0, 65547, 786437, 0, 65547, 786438, 0, 65548, 786445, 0, 65546, 786446, 0, 65547, 786447, 0, 65547, 786448, 0, 65547, 786449, 0, 65547, 786450, 0, 65547, 786451, 0, 65547, 851968, 0, 65547, 851969, 0, 65547, 851970, 0, 65547, 851971, 0, 65547, 851972, 0, 65547, 851973, 0, 65547, 851974, 0, 65548, 851981, 0, 65546, 851982, 0, 65547, 851983, 0, 65547, 851984, 0, 65547, 851985, 0, 65547, 851986, 0, 65547, 851987, 0, 65547, 917504, 0, 65547, 917505, 0, 65547, 917506, 0, 65547, 917507, 0, 65547, 917508, 0, 65547, 917509, 0, 65547, 917510, 0, 65548, 917517, 0, 65546, 917518, 0, 65547, 917519, 0, 65547, 917520, 0, 65547, 917521, 0, 65547, 917522, 0, 65547, 917523, 0, 65547, 983040, 0, 65547, 983041, 0, 65547, 983042, 0, 65547, 983043, 0, 65547, 983044, 0, 65547, 983045, 0, 65547, 983046, 0, 65548, 983053, 0, 65546, 983054, 0, 65547, 983055, 0, 65547, 983056, 0, 65547, 983057, 0, 65547, 983058, 0, 65547, 983059, 0, 65547, 1048576, 0, 65547, 1048577, 0, 65547, 1048578, 0, 65547, 1048579, 0, 65547, 1048580, 0, 65547, 1048581, 0, 65547, 1048582, 0, 65548, 1048589, 0, 65546, 1048590, 0, 65547, 1048591, 0, 65547, 1048592, 0, 65547, 1048593, 0, 65547, 1048594, 0, 65547, 1048595, 0, 65547, 1114112, 0, 65547, 1114113, 0, 65547, 1114114, 0, 65547, 1114115, 0, 65547, 1114116, 0, 65547, 1114117, 0, 65547, 1114126, 0, 65547, 1114127, 0, 65547, 1114128, 0, 65547, 1114129, 0, 65547, 1114130, 0, 65547, 1114131, 0, 65547, 1179648, 0, 65547, 1179667, 0, 65547 )
+
+[node name="eagle-attack-1" type="Sprite" parent="TileMap"]
+visible = false
+position = Vector2( 208, 128 )
+texture = ExtResource( 13 )
+
+[node name="bridge" type="Sprite" parent="TileMap"]
+position = Vector2( 160, 160 )
+z_index = 70
+texture = ExtResource( 2 )
+
+[node name="StaticBody2D" type="StaticBody2D" parent="TileMap/bridge"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMap/bridge/StaticBody2D"]
+position = Vector2( 0, 2 )
+shape = SubResource( 1 )
+
+[node name="Edge2" parent="TileMap" instance=ExtResource( 1 )]
+position = Vector2( 16, 144 )
+scene_name = "PlainsA"
+
+[node name="Edge3" parent="TileMap" instance=ExtResource( 1 )]
+position = Vector2( 304, 144 )
+scene_name = "WizardHorseOutside"
+flip_h = true
+
+[node name="Spawner" parent="TileMap" instance=ExtResource( 12 )]
+position = Vector2( 82, 159 )
+
+[node name="Static2" type="TileMap" parent="."]
+z_index = 100
+tile_set = ExtResource( 4 )
+cell_size = Vector2( 16, 16 )
+format = 1
+tile_data = PoolIntArray( 589840, 2, 0, 655376, 3, 0, 720912, 3, 0, 786448, 3, 0, 851984, 3, 0, 917520, 3, 0, 983041, 0, 327695, 983051, 0, 196619, 983056, 4, 0, 983058, 0, 327696, 1048576, 0, 196616, 1048577, 0, 131079, 1048578, 0, 131079, 1048579, 0, 131079, 1048580, 0, 131079, 1048581, 0, 131079, 1048582, 0, 131079, 1048583, 0, 131079, 1048584, 0, 131079, 1048585, 0, 131079, 1048586, 0, 131079, 1048587, 0, 131079, 1048588, 0, 131079, 1048589, 0, 131079, 1048590, 0, 131079, 1048591, 0, 131079, 1048592, 0, 131079, 1048593, 0, 131079, 1048594, 0, 131079, 1048595, 0, 196617, 1114112, 0, 196618, 1114113, 0, 65547, 1114114, 0, 65547, 1114115, 0, 65547, 1114116, 0, 65547, 1114117, 0, 65547, 1114118, 0, 65547, 1114119, 0, 65547, 1114120, 0, 65547, 1114121, 0, 65547, 1114122, 0, 65547, 1114123, 0, 65547, 1114124, 0, 65547, 1114125, 0, 65547, 1114126, 0, 65547, 1114127, 0, 65547, 1114128, 0, 65547, 1114129, 0, 65547, 1114130, 0, 65547, 1114131, 0, 196620, 1179648, 0, 196618, 1179649, 0, 65547, 1179650, 0, 65547, 1179651, 0, 65547, 1179652, 0, 65547, 1179653, 0, 65547, 1179654, 0, 65547, 1179655, 0, 65547, 1179656, 0, 65547, 1179657, 0, 65547, 1179658, 0, 65547, 1179659, 0, 65547, 1179660, 0, 65547, 1179661, 0, 65547, 1179662, 0, 65547, 1179663, 0, 65547, 1179664, 0, 65547, 1179665, 0, 65547, 1179666, 0, 65547, 1179667, 0, 196620 )
+
+[node name="Door" parent="Static2" instance=ExtResource( 8 )]
+position = Vector2( 57, 248 )
+scene_name = "DungeonA"
+
+[node name="Slime" parent="Static2" instance=ExtResource( 5 )]
+position = Vector2( 160, 256 )
+
+[node name="Dynamic" type="TileMap" parent="."]
+tile_set = ExtResource( 9 )
+cell_size = Vector2( 16, 16 )
+format = 1
+script = ExtResource( 10 )
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+autoplay = true
+bus = "Music"
+
+[node name="AmbiencePlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 7 )
+volume_db = -25.0
+autoplay = true
+bus = "SFX"
+
+[node name="Event" parent="." instance=ExtResource( 6 )]
+visible = false
+position = Vector2( 122, 152 )
+script = SubResource( 2 )
+
+[node name="Event3" parent="." instance=ExtResource( 6 )]
+visible = false
+position = Vector2( 342, 152 )
+script = SubResource( 3 )
+
+[node name="Event2" parent="." instance=ExtResource( 6 )]
+visible = false
+position = Vector2( -34, 152 )
+script = SubResource( 4 )
+
+[node name="Skeleton" parent="." instance=ExtResource( 14 )]
+position = Vector2( 247, 160 )

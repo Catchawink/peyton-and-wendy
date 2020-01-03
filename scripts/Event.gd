@@ -1,10 +1,11 @@
 tool extends Node2D
 
 func saved():
-	return ["script"]
+	return ["script", "is_input_locked"]
 
 export var is_one_shot = true
 export var is_input_locked = false
+export var auto_start = false
 var is_executing = false
 
 var player
@@ -24,6 +25,9 @@ func _ready():
 	
 	$Area2D.connect("body_entered", self, "body_entered")
 	$Area2D.connect("body_exited", self, "body_exited")
+	
+	if auto_start:
+		execute()
 	pass # Replace with function body.
 
 var has_player = false
