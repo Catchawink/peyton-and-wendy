@@ -182,7 +182,10 @@ text = "Ingredients: 2 Green Slime, 5 Red Apples, 1 Snake Tail."
 
 [node name="Door" parent="." instance=ExtResource( 28 )]
 position = Vector2( 99, 168 )
+priority = 1
+is_automatic = false
 scene_name = "WizardHorseOutside"
+path_name = ""
 flip_h = true
 
 [node name="Sprite" parent="Door" index="0"]
@@ -219,25 +222,25 @@ frame = 7
 position = Vector2( 0, -6 )
 z_index = -2
 frames = SubResource( 3 )
-frame = 2
+frame = 4
 playing = true
 
 [node name="Bubbles2" type="AnimatedSprite" parent="Cauldron"]
 position = Vector2( 0, -6 )
 z_index = -2
 frames = SubResource( 3 )
-frame = 1
+frame = 5
 speed_scale = 0.5
 playing = true
 flip_h = true
 
 [node name="MeetEvent" parent="." instance=ExtResource( 7 )]
+visible = false
 position = Vector2( 74, 159 )
 script = SubResource( 4 )
 is_input_locked = true
 
 [node name="FirstSpell" parent="." instance=ExtResource( 7 )]
-visible = false
 position = Vector2( 74, 159 )
 script = SubResource( 5 )
 is_input_locked = true

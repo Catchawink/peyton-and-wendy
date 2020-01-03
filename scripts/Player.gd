@@ -7,8 +7,7 @@ var handle_offset = Vector2(4,10)
 var is_input_locked = false
 
 func init():
-	.init()
-	run_frames = [1, 3]
+	run_frames = [1, 4]
 	push = 10
 	GameManager.inventory.connect("item_added", self, "item_added")
 	
@@ -18,6 +17,7 @@ func init():
 		for frame_index in range(0, $AnimatedSprite.frames.get_frame_count(animation)):
 			frames[frame_index] = fliter_frame(animation, frame_index)
 		animations[animation] = frames
+	.init()
 
 var last_animation = ""
 
@@ -135,14 +135,14 @@ func update_interactables():
 	for interactable in interactables:
 		interactable.set_focus(interactable == current_interactable)
 	
-var is_climbing = false
+
 func start_climbing():
-	set_physics_active(false)
+	set_collisions_active(false)
 	velocity = Vector2(0,0)
 	is_climbing = true
 
 func stop_climbing():
-	set_physics_active(true)
+	set_collisions_active(true)
 	velocity = Vector2(0,0)
 	is_climbing = false
 	
@@ -247,13 +247,16 @@ func process_input(delta):
 	#	down_ladder.visible = false
 	#	print(down_ladder.is_bottom)
 	if (is_climbing):
+		velocity.y = 0
 		if Input.is_action_pressed("ui_down"):
-			global_position += Vector2(0,1)*delta*speed
+			velocity.y = speed
+			#global_position += Vector2(0,1)*delta*speed
 			if !ladder_bottom_pos and ladder_middle_pos.y+8-get_bottom_pos().y < 2:
 				global_position = ladder_middle_pos+Vector2(0,8)
 				stop_climbing()
 		if Input.is_action_pressed("ui_up"):
-			global_position += Vector2(0,-1)*delta*speed
+			velocity.y = -speed
+			#global_position += Vector2(0,-1)*delta*speed
 			if !ladder_top_pos and ladder_middle_pos.y-8-get_top_pos().y > -2:
 				global_position = ladder_middle_pos+Vector2(0,8)
 				stop_climbing()

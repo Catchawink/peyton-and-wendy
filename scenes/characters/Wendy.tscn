@@ -32,20 +32,20 @@ animations = [ {
 "name": "idle",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 13 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 9 ) ],
-"loop": true,
-"name": "crouch",
-"speed": 5.0
+"frames": [ ExtResource( 5 ), ExtResource( 6 ) ],
+"loop": false,
+"name": "taunt",
+"speed": 10.0
 }, {
 "frames": [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 12 ), ExtResource( 4 ) ],
 "loop": true,
 "name": "run",
 "speed": 10.0
 }, {
-"frames": [ ExtResource( 5 ), ExtResource( 6 ) ],
-"loop": false,
-"name": "taunt",
-"speed": 10.0
+"frames": [ ExtResource( 13 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 9 ) ],
+"loop": true,
+"name": "crouch",
+"speed": 5.0
 } ]
 
 [sub_resource type="SpriteFrames" id=3]
@@ -74,7 +74,6 @@ shape = SubResource( 1 )
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
 animation = "run"
-frame = 1
 playing = true
 centered = false
 offset = Vector2( -16, -32 )

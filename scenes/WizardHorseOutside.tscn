@@ -87,7 +87,11 @@ item_name = "Sword"
 
 [node name="Door" parent="TileMap" instance=ExtResource( 14 )]
 position = Vector2( 191, 152 )
+priority = 1
+is_automatic = false
 scene_name = "WizardHorseInside"
+path_name = ""
+flip_h = false
 
 [node name="Sprite" parent="TileMap/Door" index="0"]
 texture = ExtResource( 16 )
@@ -110,7 +114,10 @@ comment = "...charming."
 
 [node name="Edge" parent="." instance=ExtResource( 2 )]
 position = Vector2( 16, 144 )
+priority = 1
 scene_name = "PlainsB"
+path_name = ""
+flip_h = false
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 1 )
@@ -130,6 +137,9 @@ position = Vector2( 412, 159 )
 
 [node name="Spawner" parent="." instance=ExtResource( 12 )]
 position = Vector2( 32, 160 )
+scene_name = ""
+path_name = ""
+flip_h = false
 
 [node name="Event" parent="." instance=ExtResource( 6 )]
 visible = false

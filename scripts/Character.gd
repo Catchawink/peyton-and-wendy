@@ -10,6 +10,8 @@ export var attack_frame = 0
 var run_volume = 0
 var run_pitch = 1
 
+var is_climbing = false
+
 var velocity = Vector2()
 var on_ground = false
 var crouching = false
@@ -44,6 +46,7 @@ var is_active = true
 var is_physics_active = true
 var default_collision_mask
 var default_collision_layer
+var use_gravity = true
 
 func set_active(value):
 	is_active = value
@@ -52,7 +55,10 @@ func set_active(value):
 	
 func set_physics_active(value):
 	is_physics_active = value
-	if is_physics_active:
+	set_collisions_active(value)
+		
+func set_collisions_active(value):
+	if value:
 		set_collision_mask(default_collision_mask)
 		set_collision_layer(default_collision_layer)
 	else:
@@ -118,6 +124,7 @@ func init():
 	speech_bubble = speech_bubble_scene.instance()
 	add_child(speech_bubble)
 	speech_bubble.set_global_position(get_top_pos()+Vector2(14,-7))
+	animate("idle")
 	
 func animation_finished():
 	pass
@@ -250,7 +257,12 @@ func _physics_process(delta):
 		process_input(delta)
 	
 	if not override_animation:
-		if crouching:
+		if is_climbing:
+			if velocity.y != 0:
+				animate("climb")
+			else:
+				animate("hang")
+		elif crouching:
 			if is_horizontal:
 				animate("call")
 			else:
@@ -270,7 +282,8 @@ func _physics_process(delta):
 		$AnimatedSprite.flip_h = (velocity.x < 0)
 
 	is_flipped = $AnimatedSprite.flip_h
-	velocity.y += GRAVITY
+	if !is_climbing and use_gravity:
+		velocity.y += GRAVITY
 	
 	if is_on_floor():
 		on_ground = true
