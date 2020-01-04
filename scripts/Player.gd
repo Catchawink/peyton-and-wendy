@@ -90,22 +90,38 @@ func pickup_copy(item):
 	yield(get_tree(), "idle_frame")
 	pickup(item_copy)
 	
-func pickup(item):
+func pickup(item, is_immediate=false):
 	is_picking = true
 	pickup_item = item
 	pickup_item.global_position = global_position
 	pickup_item.rotation_degrees = 0
 	pickup_item.set_physics_active(false)
-	pickup_item.get_parent().remove_child(pickup_item)
+	if pickup_item.get_parent():
+		pickup_item.get_parent().remove_child(pickup_item)
 	add_child(pickup_item)
-	$PickupPlayer.play()
-	
-	if !is_speaking:
-		yield(animate_override("pickup", .5), "completed")
 
+	if !is_immediate:
+		$PickupPlayer.play()
+	
+	if is_speaking:
+		is_immediate = true
+	
+	if !is_immediate:
+		yield(animate_override("pickup", .5), "completed")
+		if len(pickup_item.comment) > 0:
+			yield(speak(pickup_item.comment), "completed")
+	else:
+		yield(get_tree(), "idle_frame")
 	GameManager.inventory.add_item(pickup_item)
 	pickup_item = null
 	is_picking = false
+	
+func remove_item_by_name(item_name):
+	GameManager.inventory.remove_item_by_name(item_name)
+	
+func animate(animation_name, fallback_animation_name = "idle"):
+	.animate(animation_name, fallback_animation_name)
+	update_hand()
 	
 func item_added(item):
 	item.set_physics_active(false)

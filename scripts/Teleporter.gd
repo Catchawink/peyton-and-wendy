@@ -1,4 +1,4 @@
-tool extends Interactable
+tool class_name Teleporter extends Switch
 # "Spawner.gd"
 
 # Declare member variables here. Examples:
@@ -11,7 +11,8 @@ export(bool) var flip_h = false
 var timer
 
 func start_use():
-	GameManager.change_scene(scene_name, path_name)
+	if is_on:
+		GameManager.change_scene(scene_name, path_name)
 
 func get_spawn_pos():
 	return global_position+Vector2(0,8)

@@ -1,7 +1,7 @@
 tool extends Node2D
 
 func saved():
-	return ["script", "is_input_locked"]
+	return ["script", "is_input_locked", "is_one_shot", "auto_start"]
 
 export var is_one_shot = true
 export var is_input_locked = false
@@ -29,7 +29,7 @@ func _ready():
 	$Area2D.connect("body_exited", self, "body_exited")
 	
 	if auto_start:
-		execute()
+		_execute()
 	pass # Replace with function body.
 
 var has_player = false
@@ -45,14 +45,20 @@ func body_exited(var body):
 func execute():
 	pass
 
+func is_valid():
+	return true
+	
 func _process(delta):
-	if !is_executing and has_player and abs(global_position.x-player.global_position.x) < 2:
-		is_executing = true
-		if is_input_locked:
-			GameManager.lock_input()
-		yield(execute(), "completed")
-		if is_input_locked:
-			GameManager.unlock_input()
-		is_executing = false
-		if is_one_shot:
-			queue_free()
+	if !is_executing and !auto_start and has_player and abs(global_position.x-player.global_position.x) < 2 and is_valid():
+		_execute()
+
+func _execute():
+	is_executing = true
+	if is_input_locked:
+		GameManager.lock_input()
+	yield(execute(), "completed")
+	if is_input_locked:
+		GameManager.unlock_input()
+	is_executing = false
+	if is_one_shot:
+		queue_free()

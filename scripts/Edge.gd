@@ -1,4 +1,4 @@
-tool extends "res://scripts/Teleporter.gd"
+tool extends Teleporter
 
 func _process(delta):
 	if has_node("AnimatedSprite"):

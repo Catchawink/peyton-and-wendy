@@ -1,7 +1,7 @@
 extends RigidBody2D
 
 func saved():
-	return ["is_active"]
+	return ["is_active", "comment"]
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -9,6 +9,7 @@ func saved():
 export var hand_offset : Vector2
 export var use_hand = true
 export var is_weapon = false
+export(String, MULTILINE) var comment = ""
 
 var is_active = true
 var is_using = false
@@ -19,6 +20,9 @@ var default_collision_layer
 
 var player
 var pet
+
+func get_name():
+	return filename.get_file().replace("."+filename.get_extension(), "").to_lower()
 
 func select():
 	pass

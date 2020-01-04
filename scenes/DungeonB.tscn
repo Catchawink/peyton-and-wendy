@@ -39,10 +39,10 @@ format = 1
 tile_data = PoolIntArray( 655368, 5, 0, 655369, 5, 1, 655370, 5, 1, 655371, 5, 1, 655372, 5, 1, 655373, 5, 1, 655374, 5, 1, 655375, 5, 1, 655376, 5, 1, 655377, 5, 1, 655378, 5, 2, 720904, 5, 131072, 720905, 5, 131073, 720906, 5, 131073, 720907, 5, 131073, 720908, 5, 131073, 720909, 5, 131073, 720910, 5, 131073, 720911, 5, 131073, 720912, 5, 131073, 720913, 5, 131073, 720914, 5, 131074 )
 
 [node name="Button" parent="." instance=ExtResource( 1 )]
-position = Vector2( 200, 159 )
+position = Vector2( 200, 160 )
 
 [node name="Button2" parent="." instance=ExtResource( 1 )]
-position = Vector2( 232, 159 )
+position = Vector2( 232, 160 )
 
 [node name="Dynamic" type="TileMap" parent="."]
 tile_set = ExtResource( 9 )
@@ -52,11 +52,28 @@ script = ExtResource( 10 )
 
 [node name="Door" parent="." instance=ExtResource( 14 )]
 position = Vector2( 160, 152 )
+target_a = null
+target_b = null
+target_c = null
 scene_name = "DungeonA"
+
+[node name="AnimatedSprite" parent="Door" index="3"]
+animation = "on"
+frame = 0
+playing = true
 
 [node name="Door2" parent="." instance=ExtResource( 14 )]
 position = Vector2( 272, 152 )
+target_a = null
+target_b = null
+target_c = null
+is_on = false
 scene_name = "DungeonC"
+
+[node name="AnimatedSprite" parent="Door2" index="3"]
+animation = "on"
+frame = 0
+playing = true
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
 autoplay = true

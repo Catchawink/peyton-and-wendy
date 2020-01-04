@@ -77,7 +77,10 @@ func load_main():
 	yield(camera.set_fade(false), "completed")
 	scene.get_node("AudioStreamPlayer").play()
 	yield(get_tree().create_timer(2), "timeout")
-	change_scene("Park")
+	change_scene("Menu")
+	
+func pickup(item_name, is_immediate=false):
+	yield(player.pickup(spawn_item(item_name), is_immediate), "completed")
 	
 func player_died():
 	game_over()
@@ -163,42 +166,42 @@ func load_world():
 	if !player_spawner:
 		if len(spawners) > 0:
 			player_spawner = spawners[0]
-		else:
-			print("ERROR: SPAWNER MISSING!")
-			return
+
 	#	return
-	player.set_flip_h(player_spawner.flip_h)
-	player.get_parent().remove_child(player)
-	player_spawner.get_parent().add_child(player)
-	player.global_position = player_spawner.get_spawn_pos()+Vector2(8*player.get_flip_sign(),0)
-	player.silence()
-	pet.set_flip_h(player_spawner.flip_h)
-	pet.global_position = player_spawner.get_spawn_pos()+Vector2(8*-player.get_flip_sign(),0)
+	if player_spawner:
+		player.set_flip_h(player_spawner.flip_h)
+		player.get_parent().remove_child(player)
+		player_spawner.get_parent().add_child(player)
+		player.global_position = player_spawner.get_spawn_pos()+Vector2(8*player.get_flip_sign(),0)
+		player.silence()
+		pet.set_flip_h(player_spawner.flip_h)
+		pet.global_position = player_spawner.get_spawn_pos()+Vector2(8*-player.get_flip_sign(),0)
+		
+		var maps = get_maps()
+		var max_pos = Vector2(-100000,-100000)
+		var min_pos = Vector2(100000,100000)
+		for map in maps:
+			if len(map.get_used_cells()) == 0:
+				continue
+			var map_max_pos = map.global_position+map.map_to_world(map.get_used_rect().end)
+			var map_min_pos = map.global_position+map.map_to_world(map.get_used_rect().position)
+			max_pos = Vector2(max(max_pos.x, map_max_pos.x), max(max_pos.y, map_max_pos.y))
+			min_pos = Vector2(min(min_pos.x, map_min_pos.x), min(min_pos.y, map_min_pos.y))
+		#min_pos += Vector2(0,-16)
+		world_rect = Rect2(min_pos, max_pos-min_pos)
+		camera.set_bounds(world_rect)
+		create_boundary(world_rect)
+		camera.snap_position()
 	
-	var maps = get_maps()
-	var max_pos = Vector2(-100000,-100000)
-	var min_pos = Vector2(100000,100000)
-	for map in maps:
-		if len(map.get_used_cells()) == 0:
-			continue
-		var map_max_pos = map.global_position+map.map_to_world(map.get_used_rect().end)
-		var map_min_pos = map.global_position+map.map_to_world(map.get_used_rect().position)
-		max_pos = Vector2(max(max_pos.x, map_max_pos.x), max(max_pos.y, map_max_pos.y))
-		min_pos = Vector2(min(min_pos.x, map_min_pos.x), min(min_pos.y, map_min_pos.y))
-	#min_pos += Vector2(0,-16)
-	world_rect = Rect2(min_pos, max_pos-min_pos)
-	camera.set_bounds(world_rect)
-	create_boundary(world_rect)
-	camera.snap_position()
-	
-	yield(get_tree(), "idle_frame")
-	
-	player.set_active(true)
-	pet.set_active(true)
+		yield(get_tree(), "idle_frame")
+		
+		player.set_active(true)
+		pet.set_active(true)
 	yield(camera.set_fade(false), "completed")
 	#camera.set_enable_follow_smoothing(true)
 	
 func spawn_item(item_name):
+	item_name = item_name[0].to_upper() + item_name.substr(1, len(item_name)-1)
 	var item = load("res://scenes/items/"+item_name+".tscn").instance()
 	SaveManager.unsave(item)
 	scene.add_child(item)

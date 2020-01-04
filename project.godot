@@ -134,6 +134,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/Stats.gd"
 }, {
+"base": "Interactable",
+"class": "Switch",
+"language": "GDScript",
+"path": "res://scripts/Switch.gd"
+}, {
+"base": "Switch",
+"class": "Teleporter",
+"language": "GDScript",
+"path": "res://scripts/Teleporter.gd"
+}, {
 "base": "Line2D",
 "class": "Trail2D",
 "language": "GDScript",
@@ -185,6 +195,8 @@ _global_script_class_icons={
 "ResourceSet": "",
 "Singletons": "",
 "Stats": "",
+"Switch": "",
+"Teleporter": "",
 "Trail2D": "res://addons/godot-next/icons/icon_trail_2d.svg",
 "Trail3D": "res://addons/godot-next/icons/icon_trail_3d.svg",
 "TweenSequence": "",

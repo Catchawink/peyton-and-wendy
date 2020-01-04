@@ -9,7 +9,6 @@ const aware_distance = 48
 func init():
 	.init()
 	ideal_distance = max_distance
-	start_flying()
 	pass
 	
 func on_set_player():
@@ -53,7 +52,7 @@ func process_input(delta):
 	if is_flying:
 		z_index = player.z_index + 100
 		var dist = player.get_center_pos().distance_to(get_center_pos())
-		var dif = (player.get_center_pos()+Vector2(((player.width/2)+(width/2)+8)*-player.get_flip_sign(), height/2)-position)
+		var dif = (player.get_center_pos()+Vector2(((player.width/2)+(width/2)+4)*-player.get_flip_sign(), height/2)-position)
 		if abs(dif.x) > 2 or abs(dif.y) > 2: #dist > 20:
 			velocity = dif.normalized()*speed
 		else:

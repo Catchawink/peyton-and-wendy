@@ -1,0 +1,74 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://items/hinge.png" type="Texture" id=1]
+[ext_resource path="res://items/hole.png" type="Texture" id=2]
+[ext_resource path="res://scripts/TrapDoor.gd" type="Script" id=3]
+[ext_resource path="res://sfx/switch.wav" type="AudioStream" id=6]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 8.03915, 1.56814 )
+
+[sub_resource type="Animation" id=2]
+resource_name = "off"
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:rotation_degrees")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 90.0, 0.0 ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "on"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:rotation_degrees")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 90.0 ]
+}
+
+[node name="TrapDoor" type="Node2D" groups=[
+"spawners",
+]]
+z_index = -1
+script = ExtResource( 3 )
+flip_h = true
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 7, -1 )
+rotation = 1.5708
+z_index = 1
+texture = ExtResource( 1 )
+offset = Vector2( -7, -7 )
+
+[node name="Hole" type="Sprite" parent="."]
+position = Vector2( 7, -1 )
+texture = ExtResource( 2 )
+offset = Vector2( -7, -7 )
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( 0, -1.5 )
+shape = SubResource( 1 )
+
+[node name="SwitchPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 6 )
+volume_db = -20.0
+pitch_scale = 2.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/off = SubResource( 2 )
+anims/on = SubResource( 3 )

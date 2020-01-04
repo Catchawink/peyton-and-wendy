@@ -22,9 +22,6 @@ var is_horizontal = false
 var is_speaking = false
 var is_flipped = false
 
-var override_animation = null
-
-onready var speech_bubble_scene = preload("res://scenes/ui/SpeechBubble.tscn")
 var speech_bubble
 
 var can_taunt = false
@@ -103,22 +100,7 @@ func attack():
 			object.damage(1)
 	yield($AnimatedSprite, "animation_finished")
 	is_attacking = false
-	pass
-	
-var is_damaging = false
-	
-func damage(amount):
-	if is_damaging or is_dead:
-		return
-	is_damaging = true
-	print(name + " lost " + str(amount) + " heart(s).")
-	health = max(health-1, 0)
-	if health == 0:
-		die()
-	else:
-		yield(animate_override("hit"), "completed")
-	is_damaging = false
-		
+	pass	
 	
 func get_nearby_objects(distance):
 	var circle = CircleShape2D.new()
@@ -129,15 +111,37 @@ func get_nearby_objects(distance):
 	var state = get_world_2d().get_direct_space_state()
 	var results = state.intersect_shape(params,100)
 	return results
-	
-var is_initialized = false
 
-func _ready():
-	if !is_initialized and GameManager.is_active:
-		init()
-		is_initialized = true
+var is_sitting = false
+var is_sleeping = false
+var is_blinking = false
+
+func set_sleeping(value):
+	is_sleeping = value
 	
+func set_blinking(value):
+	is_blinking = value
+	
+func set_sitting(value, is_immediate=false):
+	is_sitting = value
+	if !is_immediate:
+		if is_sitting:
+			yield(animate_override("sit_down"), "completed")
+		else:
+			yield(animate_override("sit_up"), "completed")
+	
+func is_wall():
+	var space_state = get_world_2d().direct_space_state
+	var end_position = get_center_pos()+Vector2(get_flip_sign()*(width/2+16),0)
+	var result = space_state.intersect_ray(get_center_pos(), end_position, [self], ~2)
+	
+	if result.empty():
+		return false
+	return true
+
+
 func init():
+	.init()
 	default_z_index = z_index
 	default_collision_mask = get_collision_mask()
 	default_collision_layer = get_collision_layer()
@@ -164,12 +168,6 @@ func silence():
 func process_input(delta):
 	pass
 	
-func animate(animation_name, fallback_animation_name = "idle"):
-	if not $AnimatedSprite.frames.has_animation(animation_name):
-		animation_name = fallback_animation_name
-	$AnimatedSprite.play(animation_name)
-	update_hand()
-	
 var target
 
 func set_target(object):
@@ -179,9 +177,6 @@ func get_flip_sign(value=null):
 	if value == null:
 		value = is_flipped
 	return (-1 if value else 1)
-
-func update_hand():
-	pass
 	
 func taunt():
 	$TauntPlayer.pitch_scale = rand_range(taunt_pitch-.1, taunt_pitch+.1)
@@ -205,19 +200,8 @@ func wait_for_frame(frame):
 		yield(get_tree(), "idle_frame")
 	return $AnimatedSprite.animation == animation
 	
-func animate_override(animation, auto_stop = true, add_duration = 0):
-	animate(animation)
-	override_animation = animation
-	yield($AnimatedSprite, "animation_finished")
-	if override_animation != animation:
-		return
-	override_animation = null
-	
 var push = 0
 var player
-export var health = 3
-var default_health
-var is_dead = false
 	
 func reset():
 	health = default_health
@@ -233,17 +217,6 @@ func _process(delta):
 			player = players[0]
 			on_set_player()
 
-func die():
-	if is_dead:
-		return
-	is_dead = true
-	health = 0
-	print(name + ", " + str(health))
-	yield(animate_override("die"), "completed")
-	emit_signal("died")
-	visible = false
-	pass
-	
 var colliders = []
 
 func get_front_objects():
@@ -301,11 +274,18 @@ func _physics_process(delta):
 			taunt_wait = rand_range(3, 20)
 			taunt()
 			
-	if !is_dead and !is_damaging:
+	if !is_dead and !is_damaging and !is_sitting:
 		process_input(delta)
 	
 	if not override_animation:
-		if is_flying:
+		if is_sitting:
+			if is_sleeping:
+				animate("sit_sleep")
+			elif is_blinking:
+				animate("sit_blink")
+			else:
+				animate("sit")
+		elif is_flying:
 			animate("fly")
 		elif is_climbing:
 			if velocity.y != 0:
@@ -330,7 +310,7 @@ func _physics_process(delta):
 	
 	if target:
 		var dist_x = target.position.x-position.x
-		if abs(dist_x) > 8:
+		if abs(dist_x) > 2:
 			$AnimatedSprite.flip_h = dist_x < 0
 	elif velocity.x != 0:
 		$AnimatedSprite.flip_h = (velocity.x < 0)

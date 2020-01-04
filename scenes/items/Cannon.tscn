@@ -1,7 +1,8 @@
 [gd_scene load_steps=9 format=2]
 
-[ext_resource path="res://items/cannon/idle.png" type="Texture" id=1]
+[ext_resource path="res://items/cannon/Idle.png" type="Texture" id=1]
 [ext_resource path="res://items/cannon/Shoot (44x28).png" type="Texture" id=2]
+
 
 
 [sub_resource type="AtlasTexture" id=2]

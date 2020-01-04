@@ -23,6 +23,11 @@ animations = [ {
 z_index = 5
 script = ExtResource( 2 )
 is_automatic = true
+target_a = null
+target_b = null
+target_c = null
+is_on = true
+animate = false
 
 [node name="Area2D" type="Area2D" parent="."]
 

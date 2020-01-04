@@ -18,14 +18,16 @@ func clear(duration=2):
 		yield(get_tree(), "idle_frame")
 		return
 		
-	var seq := TweenSequence.new(get_tree())
-	if length > 1:
-		seq.parallel()
-		
 	for audio_stream_player in get_children():
-		seq.append(audio_stream_player, "volume_db", -40, 2).from_current()
-		audio_stream_player.stop()
+		fade_out(audio_stream_player)
+		
+	yield(get_tree().create_timer(duration), "timeout")
+	
+func fade_out(audio_stream_player):
+	var seq := TweenSequence.new(get_tree())
+	seq.append(audio_stream_player, "volume_db", -40, 2).from_current()
 	yield(seq, "finished")
+	audio_stream_player.stop()
 		
 func play(name, volume_db = 0, pitch_scale = 1, fade_in_time = 0):
 	var audio_stream_player

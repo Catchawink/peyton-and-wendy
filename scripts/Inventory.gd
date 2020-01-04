@@ -49,6 +49,21 @@ func clear():
 		remove_item(items[0])
 	items.clear()
 
+func get_item_by_name(item_name):
+	for item in items:
+		if item.get_name() == item_name:
+			return item
+	return null
+	
+func remove_item_by_name(item_name):
+	remove_item(get_item_by_name(item_name))
+	
+func has(item_name, amount=1):
+	for item in items:
+		if item.get_name() == item_name.to_lower():
+			return true
+	return false
+	
 func remove_item(item):
 	display_items[item].queue_free()
 	display_items.erase(item)

@@ -9,5 +9,5 @@ var is_empty = false
 func set_on(value, immediate=false):
 	yield(.set_on(value, immediate), "completed")
 	if value and !is_empty:
-		GameManager.player.pickup(GameManager.spawn_item(item_name))
+		GameManager.pickup(item_name)
 		is_empty = true
