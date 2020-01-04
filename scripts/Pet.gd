@@ -9,6 +9,7 @@ const aware_distance = 48
 func init():
 	.init()
 	ideal_distance = max_distance
+	start_flying()
 	pass
 	
 func on_set_player():
@@ -16,21 +17,6 @@ func on_set_player():
 	
 func called():
 	ideal_distance = 16
-
-func is_player_visible():
-	var y_dist = abs(player.position.y - position.y)
-	if y_dist > 8:
-		return false
-		
-	var space_state = get_world_2d().direct_space_state
-	var start_position = global_position+Vector2(0,collar_offset.y)
-	var result = space_state.intersect_ray(start_position, Vector2(player.global_position.x, start_position.y), [self], ~2)
-	
-	if not result.empty():
-		var hit_pos = result.position
-		if result.collider.is_in_group("players"):
-			return true
-	return false
 	
 func is_edge():
 	var space_state = get_world_2d().direct_space_state
@@ -63,20 +49,32 @@ func process_input(delta):
 		can_taunt = true
 	
 	crouching = false
-	if dist_x > ideal_distance and is_player_visible():
-		if player.position.x < position.x:
-			$AnimatedSprite.flip_h = true
-			if !is_edge():
-				velocity.x += -speed
-		if player.position.x > position.x:
-			$AnimatedSprite.flip_h = false
-			if !is_edge():
-				velocity.x += speed
+	
+	if is_flying:
+		z_index = player.z_index + 100
+		var dist = player.get_center_pos().distance_to(get_center_pos())
+		var dif = (player.get_center_pos()+Vector2(((player.width/2)+(width/2)+8)*-player.get_flip_sign(), height/2)-position)
+		if abs(dif.x) > 2 or abs(dif.y) > 2: #dist > 20:
+			velocity = dif.normalized()*speed
+		else:
+			velocity = Vector2(0,0)
+		set_target(player)
 	else:
-		ideal_distance = max_distance
-		if enemy:
-			crouching = true
-			look_at(enemy)
-		elif dist_x <= aware_distance:
-			crouching = true
-			look_at(player)
+		if dist_x > ideal_distance and is_player_visible():
+			set_target(player)
+			if player.position.x < position.x:
+				if !is_edge():
+					velocity.x += -speed
+			if player.position.x > position.x:
+				if !is_edge():
+					velocity.x += speed
+		else:
+			ideal_distance = max_distance
+			if enemy:
+				crouching = true
+				set_target(enemy)
+			elif dist_x <= aware_distance:
+				crouching = true
+				set_target(player)
+			else:
+				set_target(null)

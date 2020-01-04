@@ -10,6 +10,7 @@ var is_executing = false
 
 var player
 var wizard_horse
+var pet
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -21,6 +22,7 @@ func _ready():
 	visible = false
 		
 	player = GameManager.player
+	pet = GameManager.pet
 	wizard_horse = GameManager.get_character(GameManager.Wizard_Horse)
 	
 	$Area2D.connect("body_entered", self, "body_entered")

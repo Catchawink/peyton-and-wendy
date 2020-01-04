@@ -125,7 +125,8 @@ func change_scene(scene_name, path_name = "", reset = false):
 	last_path_name = path_name
 	scene.queue_free()
 	get_tree().get_root().remove_child(scene)
-		
+	world_rect = Rect2(-5000,5000,10000,10000)
+
 	scene = load(get_scene_path(scene_name)).instance()
 	get_tree().get_root().add_child(scene)
 	get_tree().set_current_scene(scene)
@@ -174,8 +175,6 @@ func load_world():
 	pet.set_flip_h(player_spawner.flip_h)
 	pet.global_position = player_spawner.get_spawn_pos()+Vector2(8*-player.get_flip_sign(),0)
 	
-	yield(get_tree(), "idle_frame")
-	
 	var maps = get_maps()
 	var max_pos = Vector2(-100000,-100000)
 	var min_pos = Vector2(100000,100000)
@@ -191,6 +190,8 @@ func load_world():
 	camera.set_bounds(world_rect)
 	create_boundary(world_rect)
 	camera.snap_position()
+	
+	yield(get_tree(), "idle_frame")
 	
 	player.set_active(true)
 	pet.set_active(true)

@@ -79,7 +79,7 @@ tile_data = PoolIntArray( 65535, 1, 65570, 0, 0, 131078, 327690, 1, 65539, 32769
 position = Vector2( 254, 160 )
 
 [node name="Box2" parent="TileMap" instance=ExtResource( 13 )]
-position = Vector2( 280, 160 )
+position = Vector2( 277.741, 160 )
 
 [node name="Chest" parent="TileMap" instance=ExtResource( 19 )]
 position = Vector2( 95, 152 )
@@ -87,11 +87,7 @@ item_name = "Sword"
 
 [node name="Door" parent="TileMap" instance=ExtResource( 14 )]
 position = Vector2( 191, 152 )
-priority = 1
-is_automatic = false
 scene_name = "WizardHorseInside"
-path_name = ""
-flip_h = false
 
 [node name="Sprite" parent="TileMap/Door" index="0"]
 texture = ExtResource( 16 )
@@ -137,9 +133,6 @@ position = Vector2( 412, 159 )
 
 [node name="Spawner" parent="." instance=ExtResource( 12 )]
 position = Vector2( 32, 160 )
-scene_name = ""
-path_name = ""
-flip_h = false
 
 [node name="Event" parent="." instance=ExtResource( 6 )]
 visible = false

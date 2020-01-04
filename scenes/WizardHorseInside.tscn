@@ -89,47 +89,64 @@ script/source = "extends \"res://scripts/Event.gd\"
 
 # Called when the node enters the scene tree for the first time.
 func execute():
-	yield(player.speak(\"I got your shit.\"), \"completed\")
-	wizard_horse.taunt()
-	yield(wizard_horse.speak(\"Fantastic!\"), \"completed\")
-	yield(wizard_horse.speak(\"Now the magic begins!\"), \"completed\")
-	#AudioServer.set_bus_volume_db(AudioServer.get_bus_index(\"Scene\"), -72)
-	SoundManager.mute_ambience()
-	SoundManager.play(\"spell_b\")
-	yield(wizard_horse.speak(\"By the power of the three divine...\", false), \"completed\")
-	yield(wizard_horse.speak(\"And the fourth... guy.\", false), \"completed\")
-	yield(wizard_horse.speak(\"Dave.\", false), \"completed\")
-	yield(wizard_horse.speak(\"His name is Dave.\", false), \"completed\")
-	yield(wizard_horse.speak(\"Wait. It's Donavon.\", false), \"completed\")
-	yield(wizard_horse.speak(\"Donavon... with an e?\", false), \"completed\")
-	yield(wizard_horse.speak(\"Donavone...\", false), \"completed\")
-	SoundManager.play(\"spell_c\")
-	yield(wizard_horse.speak(\"Hear me now.\", false), \"completed\")
-	yield(wizard_horse.speak(\"Fill this room, oh great ones.\", false), \"completed\")
-	yield(wizard_horse.speak(\"With your...\", false), \"completed\")
-	yield(wizard_horse.speak(\"...arms and legs.\", false), \"completed\")
-	wizard_horse.taunt()
-	yield(wizard_horse.speak(\"Oh! It's happening!\", false), \"completed\")
-	yield(wizard_horse.speak(\"This is it!\", false), \"completed\")
-	yield(player.speak(\"Are you okay?\", false), \"completed\")
-	yield(wizard_horse.speak(\"Y-Yeah.\", false), \"completed\")
-	wizard_horse.taunt()
-	yield(wizard_horse.speak(\"No! My leg is cramping a little.\", false), \"completed\")
-	SoundManager.unmute_ambience()
-	yield(GameManager.scene.get_node(\"Cauldron\").poof(), \"completed\")
-	yield(player.speak(\"Is it over?\"), \"completed\")
-	yield(wizard_horse.speak(\"Heh! Sure is!\"), \"completed\")
-	yield(player.speak(\"Ugh... What's that smell?\"), \"completed\")
-	yield(wizard_horse.speak(\"That's the brew!\"), \"completed\")
-	yield(wizard_horse.speak(\"It has strong restorative powers.\"), \"completed\")
-	
-	SoundManager.play(\"dog_sneeze\", -20, 2)
-	yield(get_tree().create_timer(1.5), \"timeout\")
-	yield(SoundManager.play(\"dog_bark\", -15, 1.6), \"completed\")
-	SoundManager.play(\"dog_sneeze\", -20, 2.5)
+	if false:
+		yield(player.speak(\"I got your shit.\"), \"completed\")
+		wizard_horse.taunt()
+		yield(wizard_horse.speak(\"Fantastic!\"), \"completed\")
+		yield(wizard_horse.speak(\"Now the magic begins!\"), \"completed\")
+		#AudioServer.set_bus_volume_db(AudioServer.get_bus_index(\"Scene\"), -72)
+		SoundManager.mute_ambience()
+		SoundManager.play(\"spell_b\", -20)
+		yield(wizard_horse.speak(\"By the power of the three divine...\", false), \"completed\")
+		yield(wizard_horse.speak(\"And the fourth... guy.\", false), \"completed\")
+		yield(wizard_horse.speak(\"Dave.\", false), \"completed\")
+		yield(wizard_horse.speak(\"His name is Dave.\", false), \"completed\")
+		yield(wizard_horse.speak(\"Wait. It's Donavon.\", false), \"completed\")
+		yield(wizard_horse.speak(\"Donavon... with an e?\", false), \"completed\")
+		yield(wizard_horse.speak(\"Donavone...\", false), \"completed\")
+		SoundManager.play(\"spell_c\", -20)
+		yield(wizard_horse.speak(\"Hear me now.\", false), \"completed\")
+		yield(wizard_horse.speak(\"Fill this room, oh great ones.\", false), \"completed\")
+		yield(wizard_horse.speak(\"With your...\", false), \"completed\")
+		yield(wizard_horse.speak(\"...arms and legs.\", false), \"completed\")
+		wizard_horse.taunt()
+		yield(wizard_horse.speak(\"Oh! It's happening!\", false), \"completed\")
+		yield(wizard_horse.speak(\"This is it!\", false), \"completed\")
+		yield(player.speak(\"Are you okay?\", false), \"completed\")
+		yield(wizard_horse.speak(\"Y-Yeah.\", false), \"completed\")
+		wizard_horse.taunt()
+		yield(wizard_horse.speak(\"No! My leg is cramping a little.\", false), \"completed\")
+		SoundManager.unmute_ambience()
+		yield(SoundManager.clear(5), \"completed\")
+		yield(GameManager.scene.get_node(\"Cauldron\").poof(), \"completed\")
+		yield(player.speak(\"Is it over?\"), \"completed\")
+		yield(wizard_horse.speak(\"Heh! Sure is!\"), \"completed\")
+		yield(player.speak(\"Ugh... What's that smell?\"), \"completed\")
+		yield(wizard_horse.speak(\"That's the brew!\"), \"completed\")
+		yield(wizard_horse.speak(\"It has strong restorative powers.\"), \"completed\")
+		
+		SoundManager.play(\"dog_sneeze\", -20, 2)
+		yield(get_tree().create_timer(1.5), \"timeout\")
+		yield(SoundManager.play(\"dog_bark\", -15, 1.6), \"completed\")
+		SoundManager.play(\"dog_sneeze\", -20, 2.5)
+		yield(get_tree().create_timer(1), \"timeout\")
+		# wendy sneeze
+		yield(wizard_horse.speak(\"...She might be allergic to it.\"), \"completed\")
+		yield(SoundManager.play(\"dog_bark\", -10, 2), \"completed\")
+		SoundManager.play(\"dog_sneeze\", -15, 2.5)
+		pet.start_flying()
+		yield(get_tree().create_timer(.75), \"timeout\")
+		yield(player.speak(\"Wendy!\"), \"completed\")
+		yield(wizard_horse.speak(\"...A temporary reaction.\"), \"completed\")
+		yield(get_tree().create_timer(.5), \"timeout\")
+		pet.stop_flying()
+		yield(get_tree().create_timer(1), \"timeout\")
+		yield(wizard_horse.speak(\"See? Back to normal!\"), \"completed\")
+		yield(get_tree().create_timer(.5), \"timeout\")
+	pet.start_flying()
 	yield(get_tree().create_timer(.5), \"timeout\")
-	# wendy sneeze
-	yield(wizard_horse.speak(\"...She might be allergic to it.\"), \"completed\")
+	yield(wizard_horse.speak(\"...\"), \"completed\")
+	yield(wizard_horse.speak(\"Oh no...\"), \"completed\")
 	pass
 "
 
@@ -182,10 +199,7 @@ text = "Ingredients: 2 Green Slime, 5 Red Apples, 1 Snake Tail."
 
 [node name="Door" parent="." instance=ExtResource( 28 )]
 position = Vector2( 99, 168 )
-priority = 1
-is_automatic = false
 scene_name = "WizardHorseOutside"
-path_name = ""
 flip_h = true
 
 [node name="Sprite" parent="Door" index="0"]
@@ -222,14 +236,12 @@ frame = 7
 position = Vector2( 0, -6 )
 z_index = -2
 frames = SubResource( 3 )
-frame = 4
 playing = true
 
 [node name="Bubbles2" type="AnimatedSprite" parent="Cauldron"]
 position = Vector2( 0, -6 )
 z_index = -2
 frames = SubResource( 3 )
-frame = 5
 speed_scale = 0.5
 playing = true
 flip_h = true

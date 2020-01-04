@@ -8,6 +8,7 @@ func saved():
 # var b = "text"
 export var hand_offset : Vector2
 export var use_hand = true
+export var is_weapon = false
 
 var is_active = true
 var is_using = false

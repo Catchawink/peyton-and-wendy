@@ -92,11 +92,16 @@ shape = SubResource( 1 )
 
 [node name="Edge2" parent="TileMap" instance=ExtResource( 1 )]
 position = Vector2( 16, 144 )
+priority = 1
 scene_name = "PlainsA"
+path_name = ""
+flip_h = false
 
 [node name="Edge3" parent="TileMap" instance=ExtResource( 1 )]
 position = Vector2( 304, 144 )
+priority = 1
 scene_name = "WizardHorseOutside"
+path_name = ""
 flip_h = true
 
 [node name="Spawner" parent="TileMap" instance=ExtResource( 12 )]
@@ -114,7 +119,10 @@ position = Vector2( 57, 248 )
 scene_name = "DungeonA"
 
 [node name="Slime" parent="Static2" instance=ExtResource( 5 )]
-position = Vector2( 160, 256 )
+position = Vector2( 135.749, 256 )
+
+[node name="Slime2" parent="Static2" instance=ExtResource( 5 )]
+position = Vector2( 180.07, 256 )
 
 [node name="Dynamic" type="TileMap" parent="."]
 tile_set = ExtResource( 9 )
@@ -148,4 +156,4 @@ position = Vector2( -34, 152 )
 script = SubResource( 4 )
 
 [node name="Skeleton" parent="." instance=ExtResource( 14 )]
-position = Vector2( 247, 160 )
+position = Vector2( 160, 160 )

@@ -39,6 +39,7 @@ var attack_wait = 2
 export var height = 16
 export var width = 16
 var type
+var default_z_index
 
 signal died
 
@@ -48,14 +49,14 @@ var default_collision_mask
 var default_collision_layer
 var use_gravity = true
 
+var is_flying = false
+
 func set_active(value):
 	is_active = value
-	set_physics_active(is_active)
 	visible = is_active
 	
 func set_physics_active(value):
 	is_physics_active = value
-	set_collisions_active(value)
 		
 func set_collisions_active(value):
 	if value:
@@ -79,10 +80,23 @@ func get_bottom_pos():
 	
 var is_attacking = false
 
+func start_flying():
+	is_flying = true
+	z_index = 100
+	
+func stop_flying():
+	is_flying = false
+	z_index = default_z_index
+
 func attack():
+	if is_damaging or is_dead:
+		return
 	is_attacking = true
 	animate_override("attack")
-	yield(wait_for_frame(attack_frame), "completed")
+	if !yield(wait_for_frame(attack_frame), "completed"):
+		print("INTERUPPTED")
+		is_attacking = false
+		return
 	for result in get_front_objects():
 		var object = result.collider
 		if object != self and object.has_method("damage"):
@@ -91,9 +105,20 @@ func attack():
 	is_attacking = false
 	pass
 	
+var is_damaging = false
+	
 func damage(amount):
+	if is_damaging or is_dead:
+		return
+	is_damaging = true
 	print(name + " lost " + str(amount) + " heart(s).")
-	health -= amount
+	health = max(health-1, 0)
+	if health == 0:
+		die()
+	else:
+		yield(animate_override("hit"), "completed")
+	is_damaging = false
+		
 	
 func get_nearby_objects(distance):
 	var circle = CircleShape2D.new()
@@ -113,6 +138,7 @@ func _ready():
 		is_initialized = true
 	
 func init():
+	default_z_index = z_index
 	default_collision_mask = get_collision_mask()
 	default_collision_layer = get_collision_layer()
 	$AnimatedSprite.connect("animation_finished", self, "animation_finished")
@@ -144,10 +170,10 @@ func animate(animation_name, fallback_animation_name = "idle"):
 	$AnimatedSprite.play(animation_name)
 	update_hand()
 	
-func look_at(object):
-	var dist_x = object.position.x-position.x
-	if abs(dist_x) > 8:
-		$AnimatedSprite.flip_h = dist_x < 0
+var target
+
+func set_target(object):
+	target = object
 	
 func get_flip_sign(value=null):
 	if value == null:
@@ -173,9 +199,11 @@ func frame_changed():
 	pass
 	
 func wait_for_frame(frame):
+	var animation = $AnimatedSprite.animation
 	yield(get_tree(), "idle_frame")
-	while $AnimatedSprite.frame != frame:
-		yield($AnimatedSprite, "frame_changed")
+	while $AnimatedSprite.frame != frame and $AnimatedSprite.animation == animation:
+		yield(get_tree(), "idle_frame")
+	return $AnimatedSprite.animation == animation
 	
 func animate_override(animation, auto_stop = true, add_duration = 0):
 	animate(animation)
@@ -187,14 +215,13 @@ func animate_override(animation, auto_stop = true, add_duration = 0):
 	
 var push = 0
 var player
-var health = 3
+export var health = 3
 var default_health
-
-func is_dead():
-	return health == 0
+var is_dead = false
 	
 func reset():
 	health = default_health
+	is_dead = false
 
 func on_set_player():
 	pass
@@ -207,30 +234,58 @@ func _process(delta):
 			on_set_player()
 
 func die():
-	if is_dead():
+	if is_dead:
 		return
+	is_dead = true
 	health = 0
+	print(name + ", " + str(health))
+	yield(animate_override("die"), "completed")
 	emit_signal("died")
+	visible = false
 	pass
 	
 var colliders = []
 
 func get_front_objects():
 	var circle = CircleShape2D.new()
-	circle.set_radius(4)
+	circle.set_radius(8)
 	var params = Physics2DShapeQueryParameters.new()
 	params.set_shape(circle)
-	params.set_transform(Transform2D(0, get_center_pos()+Vector2((width/2)*get_flip_sign(), 0)))  #update position object
+	params.set_transform(Transform2D(0, get_center_pos()+Vector2((width/2+8)*get_flip_sign(), 0)))  #update position object
 	var state = get_world_2d().get_direct_space_state()
 	var results = state.intersect_shape(params,32)
 	return results
 
+func is_player_visible():
+	var y_dist = abs(player.position.y - position.y)
+	if y_dist > 8:
+		return false
+		
+	var space_state = get_world_2d().direct_space_state
+	var start_position = get_center_pos()
+	var result = space_state.intersect_ray(start_position, Vector2(player.global_position.x, start_position.y), [self], ~2)
+	
+	if not result.empty():
+		var hit_pos = result.position
+		if result.collider.is_in_group("players"):
+			return true
+	return false
+	
 func _physics_process(delta):
+	
+	if is_flying or is_climbing:
+		set_collisions_active(false)
+		use_gravity = false
+	else:
+		set_collisions_active(is_active)
+		use_gravity = is_active
+	set_physics_active(is_active)
+
 	if not is_active or !GameManager.is_active:
 		velocity = Vector2(0,0)
 		return
 		
-	if !is_dead() and position.y > GameManager.world_rect.end.y:
+	if !is_dead and position.y > GameManager.world_rect.end.y:
 		die()
 		return
 			
@@ -238,13 +293,6 @@ func _physics_process(delta):
 		is_speaking = speech_bubble.is_speaking
 	
 	velocity.x = 0
-	
-	if can_attack and !is_attacking:
-		attack_wait_time += delta
-		if attack_wait_time >= attack_wait:
-			attack_wait_time = 0
-			attack_wait = rand_range(.05, .5)
-			attack()
 			
 	if can_taunt:
 		taunt_wait_time += delta
@@ -253,11 +301,13 @@ func _physics_process(delta):
 			taunt_wait = rand_range(3, 20)
 			taunt()
 			
-	if !is_dead():
+	if !is_dead and !is_damaging:
 		process_input(delta)
 	
 	if not override_animation:
-		if is_climbing:
+		if is_flying:
+			animate("fly")
+		elif is_climbing:
 			if velocity.y != 0:
 				animate("climb")
 			else:
@@ -278,11 +328,15 @@ func _physics_process(delta):
 			else:
 				animate("fall")
 	
-	if velocity.x != 0:
+	if target:
+		var dist_x = target.position.x-position.x
+		if abs(dist_x) > 8:
+			$AnimatedSprite.flip_h = dist_x < 0
+	elif velocity.x != 0:
 		$AnimatedSprite.flip_h = (velocity.x < 0)
 
 	is_flipped = $AnimatedSprite.flip_h
-	if !is_climbing and use_gravity:
+	if !is_climbing and !is_flying and use_gravity:
 		velocity.y += GRAVITY
 	
 	if is_on_floor():
@@ -299,9 +353,9 @@ func _physics_process(delta):
 			if collision.collider.is_in_group("bodies"):
 				if not collision.collider in colliders:
 					collision.collider.emit_signal("body_entered", self)
-				collision.collider.apply_impulse(collision.position - collision.collider.position, -collision.normal * push)
+				#collision.collider.apply_impulse(collision.position - collision.collider.position, -collision.normal * push)
 				new_colliders.append(collision.collider)
-				#collision.collider.apply_central_impulse(-collision.normal * push)
+				collision.collider.apply_central_impulse(-collision.normal * push)
 				# Depending on your character's movement speed, adjust push_factor to
 				# something between 0 and 1.
 		colliders = new_colliders

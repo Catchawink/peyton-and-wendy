@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://sfx/step_rock.wav" type="AudioStream" id=1]
 [ext_resource path="res://wendy/wendy_01.png" type="Texture" id=2]
@@ -21,6 +21,10 @@
 [ext_resource path="res://particles/poof/poof_2.png" type="Texture" id=19]
 [ext_resource path="res://particles/poof/poof_5.png" type="Texture" id=20]
 [ext_resource path="res://particles/poof/poof_3.png" type="Texture" id=21]
+[ext_resource path="res://wendy/fly/sprite_3.png" type="Texture" id=22]
+[ext_resource path="res://wendy/fly/sprite_0.png" type="Texture" id=23]
+[ext_resource path="res://wendy/fly/sprite_1.png" type="Texture" id=24]
+[ext_resource path="res://wendy/fly/sprite_2.png" type="Texture" id=25]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 5, 2 )
@@ -45,6 +49,11 @@ animations = [ {
 "frames": [ ExtResource( 13 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 9 ) ],
 "loop": true,
 "name": "crouch",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 23 ), ExtResource( 24 ), ExtResource( 25 ), ExtResource( 22 ) ],
+"loop": true,
+"name": "fly",
 "speed": 5.0
 } ]
 
@@ -73,7 +82,8 @@ shape = SubResource( 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
-animation = "run"
+animation = "fly"
+frame = 2
 playing = true
 centered = false
 offset = Vector2( -16, -32 )

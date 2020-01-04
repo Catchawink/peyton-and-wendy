@@ -12,12 +12,20 @@ func mute_ambience():
 func unmute_ambience():
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Ambience"), 0)
 	
-func clear():
+func clear(duration=2):
+	var length = len(get_children())
+	if length == 0:
+		yield(get_tree(), "idle_frame")
+		return
+		
+	var seq := TweenSequence.new(get_tree())
+	if length > 1:
+		seq.parallel()
+		
 	for audio_stream_player in get_children():
-		var seq := TweenSequence.new(get_tree())
 		seq.append(audio_stream_player, "volume_db", -40, 2).from_current()
-		yield(seq, "finished")
 		audio_stream_player.stop()
+	yield(seq, "finished")
 		
 func play(name, volume_db = 0, pitch_scale = 1, fade_in_time = 0):
 	var audio_stream_player

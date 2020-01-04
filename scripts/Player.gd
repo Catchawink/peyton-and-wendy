@@ -2,7 +2,7 @@ extends "Character.gd"
 
 signal called
 var animations = {}
-var replace_color = Color(.153, .125, .204)
+var replace_color = Color("#d69663")
 var handle_offset = Vector2(4,10)
 var is_input_locked = false
 
@@ -71,7 +71,7 @@ func update_hand():
 		$Hand.visible = false
 	else:
 		$Hand.visible = true
-		hand_position += Vector2(2,1)+$AnimatedSprite.offset+Vector2(-16, -16)
+		hand_position += Vector2(2,0)+$AnimatedSprite.offset+Vector2(-16, -16)
 		hand_position = Vector2(hand_position.x*get_flip_sign(is_flipped), hand_position.y)
 		hand_position += global_position
 	$Hand.global_position = hand_position
@@ -79,6 +79,7 @@ func update_hand():
 	for item in $Hand.get_children():
 		item.get_node("Sprite").set_flip_h(is_flipped)
 		item.position = Vector2(item.hand_offset.x*get_flip_sign(is_flipped), item.hand_offset.y)
+	$Hand.rotation_degrees = 45*get_flip_sign() if is_attacking else 0
 	
 var pickup_item
 var is_picking = false
@@ -93,6 +94,7 @@ func pickup(item):
 	is_picking = true
 	pickup_item = item
 	pickup_item.global_position = global_position
+	pickup_item.rotation_degrees = 0
 	pickup_item.set_physics_active(false)
 	pickup_item.get_parent().remove_child(pickup_item)
 	add_child(pickup_item)
@@ -137,17 +139,12 @@ func update_interactables():
 	
 
 func start_climbing():
-	set_collisions_active(false)
 	velocity = Vector2(0,0)
 	is_climbing = true
 
 func stop_climbing():
-	set_collisions_active(true)
 	velocity = Vector2(0,0)
 	is_climbing = false
-	
-func attack():
-	print("ATTACK")
 	
 func process_input(delta):
 	if is_input_locked:
@@ -157,6 +154,9 @@ func process_input(delta):
 		if current_interactable:
 			current_interactable.start_use()
 		else:
+			var current_item = GameManager.inventory.current_item
+			if current_item and current_item.is_weapon:
+				attack()
 			GameManager.inventory.start_use()
 	if Input.is_action_just_released("ui_examine"):
 		if current_interactable:
