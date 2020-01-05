@@ -153,18 +153,11 @@ func update_interactables():
 	for interactable in interactables:
 		interactable.set_focus(interactable == current_interactable)
 	
-
-func start_climbing():
-	velocity = Vector2(0,0)
-	is_climbing = true
-
-func stop_climbing():
-	velocity = Vector2(0,0)
-	is_climbing = false
-	
 func process_input(delta):
+	var input_velocity = Vector2(0,0)
+	
 	if is_input_locked:
-		return
+		return input_velocity
 
 	if Input.is_action_just_pressed("ui_examine"):
 		if current_interactable:
@@ -193,17 +186,17 @@ func process_input(delta):
 			GameManager.inventory.select_right()
 		if Input.is_action_just_pressed("ui_left"):
 			GameManager.inventory.select_left()
-		return
+		return input_velocity
 		
 	update_hand()
 	
 	if pickup_item:
 		pickup_item.global_position = get_top_pos() + Vector2(0, -11)
 		pickup_item.rotation_degrees = 0
-		return
+		return input_velocity
 		
 	if is_picking:
-		return
+		return input_velocity
 		
 	var ladder_bottom_pos
 	var ladder_top_pos
@@ -237,9 +230,9 @@ func process_input(delta):
 			var object = result.collider
 			if object.is_in_group("items"):
 				var dist = get_center_pos().distance_to(object.global_position)
-				if dist < 8:
+				if dist < 10:
 					pickup_copy(object)
-					return
+					return input_velocity
 			if object.is_in_group("ladders"):
 				#object.visible = true
 				var x_dif = object.global_position.x-get_center_pos().x
@@ -252,31 +245,25 @@ func process_input(delta):
 					if y_dif >= 0 and y_dif < 16:
 						down_ladder = object
 
-				#print("NEAR LADDER")
-				#if !is_climbing:
-				#	if object.is_top and Input.is_action_pressed("ui_down"):
-				#		global_position = object.global_position+Vector2(0,8-height+1)
-				#		start_climbing()
-				#		return
-				#else:
-	#if down_ladder:
-	#	down_ladder.visible = false
-	#	print(down_ladder.is_bottom)
 	if (is_climbing):
-		velocity.y = 0
+		input_velocity.y = 0
+		if Input.is_action_just_pressed("ui_left") or Input.is_action_just_pressed("ui_right"):
+			stop_climbing()
 		if Input.is_action_pressed("ui_down"):
-			velocity.y = speed
+			input_velocity.y = speed
 			#global_position += Vector2(0,1)*delta*speed
 			if !ladder_bottom_pos and ladder_middle_pos.y+8-get_bottom_pos().y < 2:
 				global_position = ladder_middle_pos+Vector2(0,8)
 				stop_climbing()
+				input_velocity.y = 0 
 		if Input.is_action_pressed("ui_up"):
-			velocity.y = -speed
+			input_velocity.y = -speed
 			#global_position += Vector2(0,-1)*delta*speed
 			if !ladder_top_pos and ladder_middle_pos.y-8-get_top_pos().y > -2:
 				global_position = ladder_middle_pos+Vector2(0,8)
 				stop_climbing()
-		return
+				input_velocity.y = 0 
+		return input_velocity
 	else:
 		if Input.is_action_just_pressed("ui_down"):
 			if ladder_middle_pos:
@@ -284,13 +271,13 @@ func process_input(delta):
 				ladder_map.add_child(self)
 				global_position = ladder_middle_pos+Vector2(0,height/2)
 				start_climbing()
-				return
+				return input_velocity
 		if Input.is_action_just_pressed("ui_up"):
 			if ladder_top_pos:
 				z_index = ladder_map.z_index+1
-				global_position = ladder_top_pos+Vector2(0,height/2)
+				global_position = ladder_middle_pos+Vector2(0,height/2)
 				start_climbing()
-				return
+				return input_velocity
 		
 	if Input.is_action_just_pressed("ui_down") and on_ground:
 		crouching = true
@@ -303,15 +290,15 @@ func process_input(delta):
 	if Input.is_action_pressed("ui_right"):
 		is_horizontal = true
 		if not crouching:
-			velocity.x += speed
+			input_velocity.x += speed
 		$AnimatedSprite.flip_h = false
 	
 	if Input.is_action_pressed("ui_left"):
 		is_horizontal = true
 		if not crouching:
-			velocity.x += -speed
+			input_velocity.x += -speed
 		$AnimatedSprite.flip_h = true
 		
 	if Input.is_action_just_pressed("ui_up") and on_ground:
-		velocity.y = -JUMP_POWER
-		$JumpPlayer.play()
+		jump()
+	return input_velocity

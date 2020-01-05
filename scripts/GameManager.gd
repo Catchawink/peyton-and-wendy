@@ -13,6 +13,8 @@ var reader
 var scene
 var world_rect
 
+var is_pet_missing = false
+
 const Wizard_Horse = "WizardHorse"
 const Peyton = "Peyton"
 const Wendy = "Wendy"
@@ -50,7 +52,6 @@ func _ready():
 	
 func load_scene():
 	SaveManager.load_game()
-	GameManager.unlock_input()
 	camera.set_tint(Color(0,0,0,0), 0)
 	if get_scene_name() == "Main":
 		load_main()
@@ -89,7 +90,7 @@ func pet_died():
 	game_over()
 	
 func game_over():
-	#yield(get_tree().create_timer(0), "timeout")
+	yield(get_tree().create_timer(.25), "timeout")
 	change_scene(get_scene_name(), "", true)
 	
 func get_scene_name():
@@ -116,6 +117,7 @@ func change_scene(scene_name, path_name = "", reset = false):
 	is_changing_scenes = true
 	
 	SoundManager.clear()
+	
 	yield(camera.set_fade(true), "completed")
 	player.get_parent().remove_child(player)
 	self.add_child(player)
@@ -169,13 +171,14 @@ func load_world():
 
 	#	return
 	if player_spawner:
-		player.set_flip_h(player_spawner.flip_h)
+		var flip_h = player_spawner.flip_h
+		player.set_flip_h(flip_h)
 		player.get_parent().remove_child(player)
 		player_spawner.get_parent().add_child(player)
-		player.global_position = player_spawner.get_spawn_pos()+Vector2(8*player.get_flip_sign(),0)
+		player.global_position = player_spawner.get_spawn_pos()+Vector2(8*player.get_flip_sign(flip_h),0)
 		player.silence()
-		pet.set_flip_h(player_spawner.flip_h)
-		pet.global_position = player_spawner.get_spawn_pos()+Vector2(8*-player.get_flip_sign(),0)
+		pet.set_flip_h(flip_h)
+		pet.global_position = player_spawner.get_spawn_pos()+Vector2(8*-player.get_flip_sign(flip_h),0)
 		
 		var maps = get_maps()
 		var max_pos = Vector2(-100000,-100000)
@@ -192,11 +195,11 @@ func load_world():
 		camera.set_bounds(world_rect)
 		create_boundary(world_rect)
 		camera.snap_position()
-	
+
 		yield(get_tree(), "idle_frame")
-		
 		player.set_active(true)
-		pet.set_active(true)
+		if !is_pet_missing:
+			pet.set_active(true)
 	yield(camera.set_fade(false), "completed")
 	#camera.set_enable_follow_smoothing(true)
 	

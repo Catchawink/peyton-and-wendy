@@ -4,7 +4,11 @@
 [ext_resource path="res://scenes/items/Item.tscn" type="PackedScene" id=3]
 
 [node name="Bone" instance=ExtResource( 3 )]
-hand_offset = Vector2( 2, -2 )
+hand_offset = Vector2( 1, -1 )
+drop_on_use = true
 
 [node name="Sprite" parent="." index="0"]
 texture = ExtResource( 1 )
+
+[node name="CollisionShape2D" parent="." index="1"]
+rotation = 0.785398

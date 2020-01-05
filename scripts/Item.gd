@@ -1,4 +1,4 @@
-extends RigidBody2D
+class_name Item extends RigidBody2D
 
 func saved():
 	return ["is_active", "comment"]
@@ -9,6 +9,7 @@ func saved():
 export var hand_offset : Vector2
 export var use_hand = true
 export var is_weapon = false
+export(bool) var drop_on_use = false
 export(String, MULTILINE) var comment = ""
 
 var is_active = true
@@ -31,6 +32,8 @@ func deselect():
 	pass
 	
 func start_use():
+	if drop_on_use:
+		GameManager.inventory.remove_item(self, false)
 	pass
 	
 func stop_use():
@@ -46,9 +49,12 @@ func _ready():
 	default_gravity_scale = get_gravity_scale()
 	default_collision_mask = get_collision_mask()
 	default_collision_layer = get_collision_layer()
-	set_active(is_active)
 	pass # Replace with function body.
 
+func _load():
+	print(name + ", " + str(is_active))
+	set_active(is_active)
+	
 func set_physics_active(value):
 	$CollisionShape2D.disabled = !value
 	if value:

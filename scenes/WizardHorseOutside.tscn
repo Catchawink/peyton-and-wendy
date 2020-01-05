@@ -87,18 +87,12 @@ item_name = "Sword"
 
 [node name="Door" parent="TileMap" instance=ExtResource( 14 )]
 position = Vector2( 191, 152 )
-target_a = null
-target_b = null
-target_c = null
+stop_sound = true
 scene_name = "WizardHorseInside"
+flip_h = true
 
 [node name="Sprite" parent="TileMap/Door" index="0"]
 texture = ExtResource( 16 )
-
-[node name="AnimatedSprite" parent="TileMap/Door" index="3"]
-animation = "off"
-frame = 0
-playing = true
 
 [node name="TrapDoor" parent="TileMap" instance=ExtResource( 8 )]
 position = Vector2( 264.277, 160 )
@@ -141,7 +135,7 @@ visible = false
 position = Vector2( 412, 159 )
 
 [node name="Spawner" parent="." instance=ExtResource( 12 )]
-position = Vector2( 32, 160 )
+position = Vector2( 48, 160 )
 
 [node name="Event" parent="." instance=ExtResource( 6 )]
 visible = false

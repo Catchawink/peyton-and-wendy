@@ -10,11 +10,11 @@ const auto_save = ["name", "rotation_degrees"]
 func _ready():
 	pass
 	
-func get_node_data(node, use_parent = true):
+func get_node_data(node, use_path = true):
 	var data = {}
 	var properties = node.get_property_list()
-	if use_parent:
-		data["parent"] = node.get_parent().get_path()
+	if use_path:
+		data["path"] = node.get_path()
 	data["filename"] = node.get_filename()
 	data["pos_x"] = node.position.x
 	data["pos_y"] = node.position.y
@@ -33,12 +33,13 @@ func get_node_data(node, use_parent = true):
 	return data
 	
 func get_scene_data():
+	#print(GameManager.get_scene_name() + ", " + str(len(get_tree().get_nodes_in_group("saved"))))
 	return get_nodes_data(get_tree().get_nodes_in_group("saved"))
 
-func get_nodes_data(nodes, use_parent = true):
+func get_nodes_data(nodes, use_path = true):
 	var data = []
 	for node in nodes:
-		data.append(get_node_data(node, use_parent))
+		data.append(get_node_data(node, use_path))
 	return data
 	
 func delete_game():
@@ -79,21 +80,28 @@ func get_data():
 	return data
 	
 func set_node_data(data):
-	var node = load(data["filename"]).instance()
+	var node
+	if "path" in data:
+		node = get_node(data["path"])
+	else:
+		node = load(data["filename"]).instance()
 	node.position = Vector2(data["pos_x"], data["pos_y"])
 	# Now we set the remaining variables.
+	#print("LOADING " + node.name)
 	for property_name in data.keys():
-		if property_name == "filename" or property_name == "parent" or property_name == "pos_x" or property_name == "pos_y":
+		if property_name == "filename" or property_name == "path" or property_name == "pos_x" or property_name == "pos_y":
 			continue
 		var value = data[property_name]
+		#print(property_name + ", " + str(value))
 		if property_name == "script":
 			node.set(property_name, load(value))
 			#node.get_script().set_source_code(load(value).get_source_code())
 			#node.get_script().reload(true)
 		else:
 			node.set_deferred(property_name, value)
-	if "parent" in data:
-		get_node(data["parent"]).call_deferred("add_child",node)
+	if "path" in data:
+		if node.has_method("_load"):
+			node.call_deferred("_load")
 	else:
 		GameManager.scene.call_deferred("add_child",node)
 	return node
@@ -104,7 +112,7 @@ func unsave(node):
 	return node
 	
 func copy(node):
-	return unsave(set_node_data(get_node_data(node)))
+	return unsave(set_node_data(get_node_data(node, false)))
 		
 func load_game():
 	var data = get_data()
@@ -114,21 +122,23 @@ func load_game():
 
 		for item_data in data["Inventory"]["items"]:
 			var item = unsave(set_node_data(item_data))
+			yield(get_tree(), "idle_frame")
 			item.set_physics_active(false)
 			yield(get_tree(), "idle_frame")
 			GameManager.inventory.add_item(item)
 		
 		#GameManager.inventory.select_item_by_index(int(data["Inventory"]["current_item_index"]))
-		
 	if data.has(GameManager.get_scene_name()):
+		#print(GameManager.get_scene_name())
 		var scene_data = data[GameManager.get_scene_name()]
-			
-		var save_nodes = get_tree().get_nodes_in_group("saved")
-		for i in save_nodes:
-			i.queue_free()
-			
+		#print(len(scene_data))
 		for node_data in scene_data:
 			set_node_data(node_data)
+	else:	
+		var save_nodes = get_tree().get_nodes_in_group("saved")
+		for i in save_nodes:
+			if i.has_method("_load"):
+				i.call_deferred("_load")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):

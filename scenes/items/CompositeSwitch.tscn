@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scripts/CompositeSwitch.gd" type="Script" id=5]
+[ext_resource path="res://sfx/switch.wav" type="AudioStream" id=6]
+
+[node name="CompositeSwitch" type="Node2D" groups=[
+"saved",
+]]
+z_index = -1
+script = ExtResource( 5 )
+animate = false
+
+[node name="SwitchPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 6 )
+volume_db = -20.0
+pitch_scale = 2.0

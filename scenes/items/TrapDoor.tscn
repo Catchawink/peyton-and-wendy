@@ -39,7 +39,7 @@ tracks/0/keys = {
 "values": [ 0.0, 90.0 ]
 }
 
-[node name="TrapDoor" type="Node2D" groups=[
+[node name="TrapDoor" type="Area2D" groups=[
 "spawners",
 ]]
 z_index = -1
@@ -58,9 +58,7 @@ position = Vector2( 7, -1 )
 texture = ExtResource( 2 )
 offset = Vector2( -7, -7 )
 
-[node name="Area2D" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -1.5 )
 shape = SubResource( 1 )
 

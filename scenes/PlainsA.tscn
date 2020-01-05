@@ -40,7 +40,7 @@ func execute():
 	GameManager.player.set_sleeping(true)
 	GameManager.player.set_sleeping(false)
 	GameManager.player.set_blinking(true)
-	yield(get_tree().create_timer(3), \"timeout\")
+	yield(get_tree().create_timer(2), \"timeout\")
 	GameManager.player.set_blinking(false)
 	yield(GameManager.player.speak(\"...\"), \"completed\")
 	GameManager.player.set_sitting(false)
@@ -104,7 +104,7 @@ position = Vector2( 412, 159 )
 
 [node name="Edge" parent="." instance=ExtResource( 1 )]
 position = Vector2( 304, 144 )
-is_on = true
+toggle_on_use = null
 scene_name = "PlainsB"
 flip_h = true
 

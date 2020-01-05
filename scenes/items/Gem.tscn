@@ -1,0 +1,30 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://items/gem/gem-3.png" type="Texture" id=2]
+[ext_resource path="res://scenes/items/Item.tscn" type="PackedScene" id=3]
+[ext_resource path="res://items/gem/gem-5.png" type="Texture" id=4]
+[ext_resource path="res://items/gem/gem-2.png" type="Texture" id=5]
+[ext_resource path="res://items/gem/gem-4.png" type="Texture" id=6]
+[ext_resource path="res://items/gem/gem-1.png" type="Texture" id=7]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 7 ), ExtResource( 5 ), ExtResource( 2 ), ExtResource( 6 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "default",
+"speed": 8.0
+} ]
+
+[node name="Gem" instance=ExtResource( 3 )]
+hand_offset = Vector2( 2, -2 )
+use_hand = false
+
+[node name="Sprite" parent="." index="0"]
+visible = false
+position = Vector2( 1, 1 )
+texture = ExtResource( 7 )
+
+[node name="AnimatedSprite" parent="." index="2"]
+frames = SubResource( 1 )
+frame = 2
+playing = true

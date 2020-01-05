@@ -31,7 +31,7 @@ var taunt_pitch = 1
 
 var can_attack = false
 var attack_wait_time = 0
-var attack_wait = 2
+var attack_wait = 0
 
 export var height = 16
 export var width = 16
@@ -66,6 +66,9 @@ func set_collisions_active(value):
 func set_flip_h(value):
 	$AnimatedSprite.set_flip_h(value)
 
+func get_forward_pos(offset=0):
+	return global_position+Vector2(((width/2)+offset)*get_flip_sign(),-height/2)
+	
 func get_center_pos():
 	return global_position+Vector2(0,-height/2)
 	
@@ -77,6 +80,9 @@ func get_bottom_pos():
 	
 var is_attacking = false
 
+func is_in_object():
+	return len(get_nearby_objects(1, ~2)) > 0
+	
 func start_flying():
 	is_flying = true
 	z_index = 100
@@ -91,7 +97,6 @@ func attack():
 	is_attacking = true
 	animate_override("attack")
 	if !yield(wait_for_frame(attack_frame), "completed"):
-		print("INTERUPPTED")
 		is_attacking = false
 		return
 	for result in get_front_objects():
@@ -100,14 +105,15 @@ func attack():
 			object.damage(1)
 	yield($AnimatedSprite, "animation_finished")
 	is_attacking = false
-	pass	
+	pass
 	
-func get_nearby_objects(distance):
+func get_nearby_objects(distance, mask=~0):
 	var circle = CircleShape2D.new()
 	circle.set_radius(distance)
 	var params = Physics2DShapeQueryParameters.new()
 	params.set_shape(circle)
-	params.set_transform(get_transform())  #update position object
+	params.set_collision_layer(mask)
+	params.set_transform(Transform2D(0, get_center_pos()))  #update position object
 	var state = get_world_2d().get_direct_space_state()
 	var results = state.intersect_shape(params,100)
 	return results
@@ -115,6 +121,8 @@ func get_nearby_objects(distance):
 var is_sitting = false
 var is_sleeping = false
 var is_blinking = false
+var fly_time = 0
+
 
 func set_sleeping(value):
 	is_sleeping = value
@@ -166,7 +174,7 @@ func silence():
 	speech_bubble.silence()
 	
 func process_input(delta):
-	pass
+	return Vector2(0,0)
 	
 var target
 
@@ -228,24 +236,52 @@ func get_front_objects():
 	var state = get_world_2d().get_direct_space_state()
 	var results = state.intersect_shape(params,32)
 	return results
+	
+var jump_started = false
 
-func is_player_visible():
-	var y_dist = abs(player.position.y - position.y)
-	if y_dist > 8:
-		return false
-		
+func jump():
+	jump_started = true
+	velocity.y = -JUMP_POWER
+	$JumpPlayer.play()
+	yield(get_tree().create_timer(.25), "timeout")
+	jump_started = false
+	
+func start_climbing():
+	is_climbing = true
+	velocity.y = 0
+
+func stop_climbing():
+	is_climbing = false
+	velocity.y = 0
+	
+func get_ground(distance=2):
 	var space_state = get_world_2d().direct_space_state
-	var start_position = get_center_pos()
-	var result = space_state.intersect_ray(start_position, Vector2(player.global_position.x, start_position.y), [self], ~2)
+	var result = space_state.intersect_ray(get_bottom_pos(), get_bottom_pos()+Vector2(0,distance), [self], ~2)
+	
+	if not result.empty():
+		return result.collider
+	return null
+	
+func is_object_visible(object):
+	var space_state = get_world_2d().direct_space_state
+	var result = space_state.intersect_ray(get_top_pos(), object.global_position, [self], ~2)
 	
 	if not result.empty():
 		var hit_pos = result.position
-		if result.collider.is_in_group("players"):
+		if result.collider == object:
 			return true
 	return false
 	
+var ground
+var last_ground_pos
+
 func _physics_process(delta):
 	
+	if is_flying:
+		fly_time += delta
+	else:
+		fly_time = 0
+		
 	if is_flying or is_climbing:
 		set_collisions_active(false)
 		use_gravity = false
@@ -273,12 +309,35 @@ func _physics_process(delta):
 			taunt_wait_time = 0
 			taunt_wait = rand_range(3, 20)
 			taunt()
-			
+		
+	var input_velocity = Vector2(0,0)
 	if !is_dead and !is_damaging and !is_sitting:
-		process_input(delta)
+		input_velocity = process_input(delta)
+		
+	var new_ground = get_ground()
+	if ground != new_ground:
+		ground = new_ground
+		last_ground_pos = null
+		
+	if ground and ground.is_in_group("platforms") and last_ground_pos != null:
+		var move_dif = ground.global_position-last_ground_pos
+		global_position += move_dif
+		
+	if ground:
+		last_ground_pos = ground.global_position
+		
+	if on_ground and input_velocity.y == 0 and !is_climbing and !jump_started:
+		velocity.y = get_floor_velocity().y
+	
+	if is_climbing:
+		velocity.y = 0
+		
+	velocity += input_velocity
 	
 	if not override_animation:
-		if is_sitting:
+		if is_dead:
+			animate("dead")
+		elif is_sitting:
 			if is_sleeping:
 				animate("sit_sleep")
 			elif is_blinking:
@@ -339,4 +398,3 @@ func _physics_process(delta):
 				# Depending on your character's movement speed, adjust push_factor to
 				# something between 0 and 1.
 		colliders = new_colliders
-				

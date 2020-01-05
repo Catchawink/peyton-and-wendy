@@ -8,17 +8,18 @@ extents = Vector2( 10, 8 )
 
 [node name="Box" type="RigidBody2D" groups=[
 "bodies",
+"leashed",
 "saved",
 ]]
 z_index = 10
 collision_mask = 7
+mass = 2.0
 continuous_cd = 1
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
-centered = false
-offset = Vector2( -10, -16 )
+offset = Vector2( 0, -8 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -8 )

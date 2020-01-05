@@ -3,7 +3,7 @@
 [ext_resource path="res://scripts/Item.gd" type="Script" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 4, 5 )
+extents = Vector2( 3.53553, 7.07107 )
 
 [node name="Item" type="RigidBody2D" groups=[
 "bodies",
@@ -13,6 +13,7 @@ extents = Vector2( 4, 5 )
 z_index = 15
 collision_layer = 16
 mass = 10.0
+angular_damp = 0.0
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_group_": true
@@ -22,3 +23,5 @@ __meta__ = {
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]

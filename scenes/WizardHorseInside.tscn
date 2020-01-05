@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=2]
+[gd_scene load_steps=39 format=2]
 
 [ext_resource path="res://sfx/forest_ambience.wav" type="AudioStream" id=1]
 [ext_resource path="res://scripts/Scene.gd" type="Script" id=2]
@@ -92,42 +92,43 @@ func is_valid():
 	
 # Called when the node enters the scene tree for the first time.
 func execute():
-	yield(player.speak(\"I got your shit.\"), \"completed\")
-	wizard_horse.taunt()
-	yield(wizard_horse.speak(\"Fantastic!\"), \"completed\")
-	yield(wizard_horse.speak(\"Now the magic begins!\"), \"completed\")
-	#AudioServer.set_bus_volume_db(AudioServer.get_bus_index(\"Scene\"), -72)
-	SoundManager.mute_ambience()
-	SoundManager.play(\"spell_b\", -20)
-	yield(wizard_horse.speak(\"By the power of the three divine...\", false), \"completed\")
-	yield(wizard_horse.speak(\"And the fourth... guy.\", false), \"completed\")
-	yield(wizard_horse.speak(\"Dave.\", false), \"completed\")
-	yield(wizard_horse.speak(\"His name is Dave.\", false), \"completed\")
-	yield(wizard_horse.speak(\"Wait. It's Donavon.\", false), \"completed\")
-	yield(wizard_horse.speak(\"Donavon... with an e?\", false), \"completed\")
-	yield(wizard_horse.speak(\"Donavone...\", false), \"completed\")
-	SoundManager.play(\"spell_c\", -20)
-	yield(wizard_horse.speak(\"Hear me now.\", false), \"completed\")
-	yield(wizard_horse.speak(\"Fill this room, oh great ones.\", false), \"completed\")
-	yield(wizard_horse.speak(\"With your...\", false), \"completed\")
-	yield(wizard_horse.speak(\"...arms and legs.\", false), \"completed\")
-	wizard_horse.taunt()
-	yield(wizard_horse.speak(\"Oh! It's happening!\", false), \"completed\")
-	yield(wizard_horse.speak(\"This is it!\", false), \"completed\")
-	yield(player.speak(\"Are you okay?\", false), \"completed\")
-	yield(wizard_horse.speak(\"Y-Yeah.\", false), \"completed\")
-	wizard_horse.taunt()
-	yield(wizard_horse.speak(\"No! My leg is cramping a little.\", false), \"completed\")
-	SoundManager.clear(5)
-	yield(get_tree().create_timer(3), \"timeout\")
-	SoundManager.unmute_ambience()
-	yield(GameManager.scene.get_node(\"Cauldron\").poof(), \"completed\")
-	yield(player.speak(\"Is it over?\"), \"completed\")
-	yield(wizard_horse.speak(\"Heh! Sure is!\"), \"completed\")
-	yield(player.speak(\"Ugh... What's that smell?\"), \"completed\")
-	yield(wizard_horse.speak(\"That's the brew!\"), \"completed\")
-	yield(wizard_horse.speak(\"It has strong restorative powers.\"), \"completed\")
-	
+	if false:
+		yield(player.speak(\"I got your shit.\"), \"completed\")
+		wizard_horse.taunt()
+		yield(wizard_horse.speak(\"Fantastic!\"), \"completed\")
+		yield(wizard_horse.speak(\"Now the magic begins!\"), \"completed\")
+		#AudioServer.set_bus_volume_db(AudioServer.get_bus_index(\"Scene\"), -72)
+		SoundManager.mute_ambience()
+		SoundManager.play(\"spell_b\", -20)
+		yield(wizard_horse.speak(\"By the power of the three divine...\", false), \"completed\")
+		yield(wizard_horse.speak(\"And the fourth... guy.\", false), \"completed\")
+		yield(wizard_horse.speak(\"Dave.\", false), \"completed\")
+		yield(wizard_horse.speak(\"His name is Dave.\", false), \"completed\")
+		yield(wizard_horse.speak(\"Wait. It's Donavon.\", false), \"completed\")
+		yield(wizard_horse.speak(\"Donavon... with an e?\", false), \"completed\")
+		yield(wizard_horse.speak(\"Donavone...\", false), \"completed\")
+		SoundManager.play(\"spell_c\", -20)
+		yield(wizard_horse.speak(\"Hear me now.\", false), \"completed\")
+		yield(wizard_horse.speak(\"Fill this room, oh great ones.\", false), \"completed\")
+		yield(wizard_horse.speak(\"With your...\", false), \"completed\")
+		yield(wizard_horse.speak(\"...arms and legs.\", false), \"completed\")
+		wizard_horse.taunt()
+		yield(wizard_horse.speak(\"Oh! It's happening!\", false), \"completed\")
+		yield(wizard_horse.speak(\"This is it!\", false), \"completed\")
+		yield(player.speak(\"Are you okay?\", false), \"completed\")
+		yield(wizard_horse.speak(\"Y-Yeah.\", false), \"completed\")
+		wizard_horse.taunt()
+		yield(wizard_horse.speak(\"No! My leg is cramping a little.\", false), \"completed\")
+		SoundManager.clear(5)
+		yield(get_tree().create_timer(3), \"timeout\")
+		SoundManager.unmute_ambience()
+		yield(GameManager.scene.get_node(\"Cauldron\").poof(), \"completed\")
+		yield(player.speak(\"Is it over?\"), \"completed\")
+		yield(wizard_horse.speak(\"Heh! Sure is!\"), \"completed\")
+		yield(player.speak(\"Ugh... What's that smell?\"), \"completed\")
+		yield(wizard_horse.speak(\"That's the brew!\"), \"completed\")
+		yield(wizard_horse.speak(\"It has strong restorative powers.\"), \"completed\")
+		
 	SoundManager.play(\"dog_sneeze\", -20, 2)
 	yield(get_tree().create_timer(1.5), \"timeout\")
 	yield(SoundManager.play(\"dog_bark\", -15, 1.6), \"completed\")
@@ -151,6 +152,25 @@ func execute():
 	yield(get_tree().create_timer(.5), \"timeout\")
 	yield(wizard_horse.speak(\"...\"), \"completed\")
 	yield(wizard_horse.speak(\"Oh no...\"), \"completed\")
+	pass
+"
+
+[sub_resource type="GDScript" id=6]
+script/source = "extends \"res://scripts/Event.gd\"
+
+func is_valid():
+	return GameManager.inventory.has(\"gem\")
+	
+# Called when the node enters the scene tree for the first time.
+func execute():
+	SoundManager.mute_ambience()
+	yield(player.speak(\"I got everything.\"), \"completed\")
+	wizard_horse.taunt()
+	yield(wizard_horse.speak(\"Great!\"), \"completed\")
+	yield(wizard_horse.speak(\"It's time, then.'\"), \"completed\")
+	yield(get_tree().create_timer(1), \"timeout\")
+	#AudioServer.set_bus_volume_db(AudioServer.get_bus_index(\"Scene\"), -72)
+	GameManager.change_scene(\"PlainsA\")
 	pass
 "
 
@@ -183,7 +203,7 @@ format = 1
 tile_data = PoolIntArray( 458752, 1, 0, 458753, 1, 1, 458754, 1, 1, 458755, 1, 1, 458756, 1, 1, 458757, 1, 1, 458758, 1, 1, 458759, 1, 1, 458760, 1, 2, 524288, 1, 65536, 524289, 1, 65537, 524290, 1, 65537, 524291, 1, 65537, 524292, 1, 65537, 524293, 1, 65537, 524294, 1, 65537, 524295, 1, 65537, 524296, 1, 65538, 589824, 1, 65536, 589825, 1, 65537, 589826, 1, 65537, 589827, 1, 65537, 589828, 1, 65537, 589829, 1, 65537, 589830, 1, 65537, 589831, 1, 65537, 589832, 1, 65538, 655360, 1, 131072, 655361, 1, 131073, 655362, 1, 131073, 655363, 1, 131073, 655364, 1, 131073, 655365, 1, 131073, 655366, 1, 131073, 655367, 1, 131073, 655368, 1, 131074, 720896, 1, 4, 720897, 1, 4, 720898, 1, 4, 720899, 1, 4, 720900, 1, 4, 720901, 1, 4, 720902, 1, 4, 720903, 1, 4, 720904, 1, 4 )
 
 [node name="Table" parent="TileMap" instance=ExtResource( 29 )]
-position = Vector2( 124, 176 )
+position = Vector2( 128, 176 )
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 4 )
@@ -197,25 +217,17 @@ volume_db = -10.0
 bus = "Ambience"
 
 [node name="SpellBook" parent="." instance=ExtResource( 30 )]
-position = Vector2( 125, 158 )
+position = Vector2( 128, 158 )
 z_index = 50
 text = "Ingredients: 2 Green Slime, 5 Red Apples, 1 Snake Tail."
 
 [node name="Door" parent="." instance=ExtResource( 28 )]
 position = Vector2( 99, 168 )
-target_a = null
-target_b = null
-target_c = null
 scene_name = "WizardHorseOutside"
 flip_h = true
 
 [node name="Sprite" parent="Door" index="0"]
 texture = ExtResource( 31 )
-
-[node name="AnimatedSprite" parent="Door" index="3"]
-animation = "on"
-frame = 0
-playing = true
 
 [node name="WizardHorse" parent="." instance=ExtResource( 9 )]
 position = Vector2( 19, 176 )
@@ -248,19 +260,20 @@ frame = 7
 position = Vector2( 0, -6 )
 z_index = -2
 frames = SubResource( 3 )
-frame = 5
+frame = 2
 playing = true
 
 [node name="Bubbles2" type="AnimatedSprite" parent="Cauldron"]
 position = Vector2( 0, -6 )
 z_index = -2
 frames = SubResource( 3 )
-frame = 1
+frame = 3
 speed_scale = 0.5
 playing = true
 flip_h = true
 
 [node name="MeetEvent" parent="." instance=ExtResource( 7 )]
+visible = false
 position = Vector2( 74, 159 )
 script = SubResource( 4 )
 is_input_locked = true
@@ -269,5 +282,10 @@ is_input_locked = true
 position = Vector2( 74, 159 )
 script = SubResource( 5 )
 is_input_locked = true
+
+[node name="SecondSpell" parent="." instance=ExtResource( 7 )]
+visible = false
+position = Vector2( 74, 159 )
+script = SubResource( 6 )
 
 [editable path="Door"]

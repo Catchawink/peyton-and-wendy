@@ -64,10 +64,17 @@ func has(item_name, amount=1):
 			return true
 	return false
 	
-func remove_item(item):
+func remove_item(item, is_erased=true):
 	display_items[item].queue_free()
 	display_items.erase(item)
-	item.queue_free()
+	if is_erased:
+		item.queue_free()
+	else:
+		item.get_parent().remove_child(item)
+		GameManager.scene.add_child(item)
+		item.set_active(true)
+		item.z_index = 1000
+		item.global_position = GameManager.player.get_forward_pos(4)
 	items.erase(item)
 	if item == current_item:
 		current_item = null
@@ -100,8 +107,8 @@ func start_use():
 	if !current_item:
 		return
 	is_using = true
-	current_item.start_use()
 	current_item.is_using = true
+	current_item.start_use()
 	
 func stop_use():
 	if !current_item:

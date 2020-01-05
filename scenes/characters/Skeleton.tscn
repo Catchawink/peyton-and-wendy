@@ -83,9 +83,9 @@ animations = [ {
 "name": "attack",
 "speed": 12.0
 }, {
-"frames": [ ExtResource( 53 ), ExtResource( 45 ), ExtResource( 47 ), ExtResource( 55 ), ExtResource( 54 ), ExtResource( 56 ), ExtResource( 48 ), ExtResource( 49 ), ExtResource( 50 ), ExtResource( 46 ), ExtResource( 51 ), ExtResource( 52 ), ExtResource( 59 ), ExtResource( 58 ), ExtResource( 57 ) ],
+"frames": [ ExtResource( 60 ), ExtResource( 63 ), ExtResource( 64 ), ExtResource( 65 ), ExtResource( 61 ), ExtResource( 67 ), ExtResource( 62 ), ExtResource( 66 ) ],
 "loop": false,
-"name": "die",
+"name": "hit",
 "speed": 12.0
 }, {
 "frames": [ ExtResource( 11 ), ExtResource( 5 ), ExtResource( 26 ), ExtResource( 13 ), ExtResource( 20 ), ExtResource( 8 ), ExtResource( 25 ), ExtResource( 18 ), ExtResource( 6 ), ExtResource( 15 ), ExtResource( 21 ), ExtResource( 12 ), ExtResource( 9 ) ],
@@ -93,9 +93,14 @@ animations = [ {
 "name": "run",
 "speed": 18.0
 }, {
-"frames": [ ExtResource( 60 ), ExtResource( 63 ), ExtResource( 64 ), ExtResource( 65 ), ExtResource( 61 ), ExtResource( 67 ), ExtResource( 62 ), ExtResource( 66 ) ],
+"frames": [ null ],
+"loop": true,
+"name": "dead",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 53 ), ExtResource( 45 ), ExtResource( 47 ), ExtResource( 55 ), ExtResource( 54 ), ExtResource( 56 ), ExtResource( 48 ), ExtResource( 49 ), ExtResource( 50 ), ExtResource( 46 ), ExtResource( 51 ), ExtResource( 52 ), ExtResource( 59 ), ExtResource( 58 ), ExtResource( 57 ) ],
 "loop": false,
-"name": "hit",
+"name": "die",
 "speed": 12.0
 } ]
 
@@ -108,9 +113,9 @@ script = ExtResource( 2 )
 __meta__ = {
 "_edit_group_": true
 }
+health = 10
 speed = 30
 attack_frame = 7
-health = 10
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -4 )
@@ -118,8 +123,7 @@ shape = SubResource( 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
-animation = "hit"
-frame = 7
+animation = "dead"
 playing = true
 offset = Vector2( 0, -32 )
 

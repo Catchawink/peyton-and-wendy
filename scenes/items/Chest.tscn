@@ -20,35 +20,36 @@ animations = [ {
 }, {
 "frames": [ ExtResource( 2 ) ],
 "loop": true,
-"name": "off_to_on",
+"name": "on_to_off",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 2 ) ],
 "loop": true,
-"name": "on_to_off",
+"name": "off_to_on",
 "speed": 5.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 8, 8 )
 
-[node name="Chest" type="Node2D" groups=[
+[node name="Chest" type="Area2D" groups=[
 "saved",
 ]]
 z_index = 5
+collision_layer = 0
+collision_mask = 31
 script = ExtResource( 5 )
+toggle_on_use = true
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
 animation = "off"
-
-[node name="Area2D" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-shape = SubResource( 2 )
 
 [node name="SwitchPlayer" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 4 )
 volume_db = -10.0
 pitch_scale = 1.5
 bus = "SFX"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 2 )

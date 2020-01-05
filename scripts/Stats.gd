@@ -30,7 +30,7 @@ func die():
 	if is_animated:
 		yield(animate_override("die"), "completed")
 	emit_signal("died")
-	visible = false
+	#visible = false
 	pass
 	
 func animate(animation_name, fallback_animation_name = "idle"):

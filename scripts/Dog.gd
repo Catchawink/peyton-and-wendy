@@ -26,9 +26,13 @@ func act():
 			acting_velocity.x = (1 if is_right else -1)*speed
 		
 func process_input(delta):
+	var input_velocity = Vector2(0,0)
+	
 	if is_wall() and acting_velocity.x != 0:
-		velocity.x = -velocity.x
-	velocity = acting_velocity
+		input_velocity.x = -velocity.x
+	input_velocity = acting_velocity
+	
+	return input_velocity
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass

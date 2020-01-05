@@ -19,34 +19,35 @@ animations = [ {
 "name": "off",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 3 ), ExtResource( 1 ) ],
-"loop": true,
-"name": "off_to_on",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 1 ), ExtResource( 3 ) ],
 "loop": true,
 "name": "on_to_off",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 3 ), ExtResource( 1 ) ],
+"loop": true,
+"name": "off_to_on",
 "speed": 5.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 14, 10 )
 
-[node name="Switch" type="Node2D"]
+[node name="Switch" type="Area2D" groups=[
+"saved",
+]]
 z_index = -1
 script = ExtResource( 5 )
+toggle_on_use = true
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
 animation = "off_to_on"
 frame = 1
 speed_scale = 4.0
-offset = Vector2( 0, -2 )
+offset = Vector2( 1, -2 )
 
-[node name="Area2D" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( -1, -2 )
 shape = SubResource( 2 )
 

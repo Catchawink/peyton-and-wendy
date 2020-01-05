@@ -1,9 +1,13 @@
-extends "res://scripts/Switch.gd"
+extends Switch
 
 func saved():
-	return ["is_empty", "item_name"]
+	if respawn:
+		return ["item_name"]
+	else:
+		return ["is_empty", "item_name"]
 
 export(String) var item_name = ""
+export(bool) var respawn = false
 var is_empty = false
 
 func set_on(value, immediate=false):

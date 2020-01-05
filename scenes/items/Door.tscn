@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://items/door/stone_gate.png" type="Texture" id=1]
 [ext_resource path="res://scripts/Teleporter.gd" type="Script" id=2]
@@ -11,34 +11,36 @@
 [ext_resource path="res://items/door/bars/sprite_4.png" type="Texture" id=9]
 [ext_resource path="res://items/door/bars/sprite_0.png" type="Texture" id=10]
 [ext_resource path="res://items/door/bars/sprite_5.png" type="Texture" id=11]
+[ext_resource path="res://sfx/steel roll.wav" type="AudioStream" id=12]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 7, 16 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
-"frames": [ ExtResource( 10 ) ],
-"loop": true,
-"name": "off",
-"speed": 10.0
-}, {
 "frames": [ ExtResource( 5 ) ],
 "loop": true,
 "name": "on",
-"speed": 5.0
+"speed": 20.0
 }, {
-"frames": [ ExtResource( 10 ), ExtResource( 6 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 11 ), ExtResource( 7 ), ExtResource( 5 ) ],
-"loop": true,
-"name": "off_to_on",
-"speed": 10.0
+"frames": [ ExtResource( 10 ) ],
+"loop": false,
+"name": "off",
+"speed": 20.0
 }, {
 "frames": [ ExtResource( 5 ), ExtResource( 7 ), ExtResource( 11 ), ExtResource( 9 ), ExtResource( 8 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 10 ) ],
-"loop": true,
+"loop": false,
 "name": "on_to_off",
-"speed": 10.0
+"speed": 20.0
+}, {
+"frames": [ ExtResource( 10 ), ExtResource( 6 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 11 ), ExtResource( 7 ), ExtResource( 5 ) ],
+"loop": false,
+"name": "off_to_on",
+"speed": 20.0
 } ]
 
-[node name="Door" type="Node2D" groups=[
+[node name="Door" type="Area2D" groups=[
+"saved",
 "spawners",
 ]]
 z_index = 5
@@ -49,19 +51,21 @@ is_on = true
 texture = ExtResource( 1 )
 offset = Vector2( 0, -8 )
 
-[node name="Area2D" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -8 )
 z_index = -1
 shape = SubResource( 1 )
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 3 )
+volume_db = -10.0
+
+[node name="SwitchPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 12 )
 volume_db = -15.0
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0, -8 )
 frames = SubResource( 2 )
-animation = "off_to_on"
-frame = 7
+animation = "on"
+playing = true
