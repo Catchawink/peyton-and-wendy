@@ -21,20 +21,28 @@ const line_limt = 12
 	
 var is_speaking = false
 			
-func speak(text, use_input = true):
+func speak(text, use_input = true, interrupt=false, line_limit=-1, accelerate=false):
 	is_speaking = true
-	text = GameManager.auto_indent(text)
+	text = GameManager.auto_indent(text, line_limit)
 	arrow.visible = false
 	text = text.to_upper()
 	self.visible = true
 	var display_text = ""
 	var id = current_id+1
 	current_id = id
+	var time_scale = 1
 	for text_char in text:
 		display_text += text_char
 		$Voice.play()
 		label.set_text(display_text)
-		yield(get_tree().create_timer(.05), "timeout")
+		var time = .05
+		if text_char == "." or text_char == "!" or text_char == "?":
+			time = .1
+		time = time*time_scale
+		if accelerate:
+			time_scale -= .1*time
+		
+		yield(get_tree().create_timer(time), "timeout")
 		if current_id != id:
 			return
 	if use_input:
@@ -48,10 +56,11 @@ func speak(text, use_input = true):
 		arrow.visible = false
 		shrink_text(4)
 	else:
-		var readingtime = len(text) / 15.00
-		yield(get_tree().create_timer(readingtime), "timeout")
-		if current_id != id:
-			return
+		if !interrupt:
+			var readingtime = len(text) / 15.00
+			yield(get_tree().create_timer(readingtime), "timeout")
+			if current_id != id:
+				return
 		arrow.visible = true
 		arrow.visible = false
 		shrink_text(4)

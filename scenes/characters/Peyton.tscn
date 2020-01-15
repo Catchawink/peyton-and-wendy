@@ -51,11 +51,6 @@ extents = Vector2( 5, 9 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
-"frames": [ ExtResource( 15 ), ExtResource( 6 ), ExtResource( 8 ), ExtResource( 13 ) ],
-"loop": true,
-"name": "idle",
-"speed": 4.0
-}, {
 "frames": [ ExtResource( 40 ) ],
 "loop": true,
 "name": "front",
@@ -66,25 +61,20 @@ animations = [ {
 "name": "call",
 "speed": 3.0
 }, {
+"frames": [ ExtResource( 15 ), ExtResource( 6 ), ExtResource( 8 ), ExtResource( 13 ) ],
+"loop": true,
+"name": "idle",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 41 ) ],
 "loop": true,
 "name": "side",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 10 ) ],
-"loop": false,
-"name": "pickup",
-"speed": 3.0
-}, {
 "frames": [ ExtResource( 1 ) ],
 "loop": true,
 "name": "jump",
 "speed": 5.0
-}, {
-"frames": [ ExtResource( 23 ) ],
-"loop": false,
-"name": "attack",
-"speed": 8.0
 }, {
 "frames": [ ExtResource( 2 ), ExtResource( 20 ), ExtResource( 22 ), ExtResource( 21 ) ],
 "loop": true,
@@ -151,6 +141,16 @@ animations = [ {
 "name": "dead",
 "speed": 5.0
 }, {
+"frames": [ ExtResource( 10 ) ],
+"loop": false,
+"name": "pickup",
+"speed": 3.0
+}, {
+"frames": [ ExtResource( 23 ) ],
+"loop": false,
+"name": "attack",
+"speed": 8.0
+}, {
 "frames": [ ExtResource( 45 ), ExtResource( 43 ), ExtResource( 47 ), ExtResource( 46 ) ],
 "loop": false,
 "name": "die",
@@ -176,7 +176,8 @@ shape = SubResource( 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
-animation = "dead"
+animation = "idle"
+frame = 1
 playing = true
 offset = Vector2( 0, -16 )
 

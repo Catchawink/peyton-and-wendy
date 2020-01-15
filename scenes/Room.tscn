@@ -1,0 +1,131 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://tilesets/Static.tres" type="TileSet" id=4]
+[ext_resource path="res://scenes/helpers/Event.tscn" type="PackedScene" id=6]
+[ext_resource path="res://sfx/forest_ambience.wav" type="AudioStream" id=7]
+[ext_resource path="res://tilesets/Dynamic.tres" type="TileSet" id=9]
+[ext_resource path="res://scripts/NodeTileMap.gd" type="Script" id=10]
+[ext_resource path="res://scenes/helpers/Spawner.tscn" type="PackedScene" id=12]
+[ext_resource path="res://music/Midafternoon.wav" type="AudioStream" id=13]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends \"res://scripts/Event.gd\"
+
+# Called when the node enters the scene tree for the first time.
+func execute():
+	# left and right button guides appear. like this:
+	#	move
+	#  <-  ->
+	# up button guide appears
+	# down button guide appears
+	# dog command guides appear (call, sit)
+	# inventory guide appears
+	# use item guide appears
+	# player uses stick and leash to play with Wendy
+	# rain starts when player isn't around Wendy, Wendy is set inactive
+	# activate particles, set camera tint to this for rain: Color(\"#8a1e2030\")
+	# other npcs leave, just Peyton
+	# Peyton tries calling out for Wendy
+	# Finally sits under tree to rest for a second
+	# Fade out, wakes up in forest
+	yield(get_tree(), \"idle_frame\")
+	yield(get_tree().create_timer(2), \"timeout\")
+	GameManager.pickup(\"leash\", true)
+	if false:
+		yield(get_tree().create_timer(4), \"timeout\")
+		var sky = GameManager.scene.get_node(\"Sky/MarginContainer/Sky\")
+		TweenSequence.new(get_tree()).append(sky, \"modulate\", Color(\"#313131\"), 10).from_current()
+		var clouds = GameManager.scene.get_node(\"Sky/ParallaxClouds/Sprite\")
+		TweenSequence.new(get_tree()).append(clouds, \"modulate\",  Color(\"#161616\"), 10).from_current()
+		GameManager.camera.set_tint(Color(\"#5e1a1d33\"), 10)
+		yield(get_tree().create_timer(10), \"timeout\")
+		yield(player.speak(\"It's getting dark...\"), \"completed\")
+		yield(get_tree().create_timer(1), \"timeout\")
+		var particles = GameManager.scene.get_node(\"ParticleLayer/PanelContainer/Control/Rain\")
+		particles.amount = 1
+		particles.emitting = true
+		#thunder noise and flash, Peyton loses leash and Wendy runs off
+		SoundManager.play(\"rain\", 0, 1, 5)
+		for i in range(1, 500):
+			yield(get_tree().create_timer(10/500), \"timeout\")
+			particles.amount = i
+			
+	yield(player.speak(\"We should get going.\"), \"completed\")
+	yield(get_tree().create_timer(1), \"timeout\")
+	GameManager.player.remove_item_by_name(\"leash\")
+	GameManager.is_pet_missing = true
+	pet.set_active(false)
+	yield(SoundManager.play(\"dog_bark\", -10, 2), \"completed\")
+	yield(get_tree().create_timer(.25), \"timeout\")
+	yield(player.speak(\"Wendy!\"), \"completed\")
+	yield(get_tree().create_timer(3), \"timeout\")
+	yield(player.speak(\"Where did she go...?\"), \"completed\")
+	yield(get_tree().create_timer(3), \"timeout\")
+	yield(player.speak(\"It's late...\"), \"completed\")
+	yield(player.speak(\"I'm going to rest for a second...\"), \"completed\")
+	yield(GameManager.player.set_sitting(true), \"completed\")
+	GameManager.player.set_sleeping(true)
+	yield(get_tree().create_timer(3), \"timeout\")
+	GameManager.change_scene(\"PlainsA\")
+	#yield(GameManager.player.speak(\"Wow, what a view...\", false), \"completed\")
+	pass
+"
+
+[node name="Park" type="Node2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -100
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.0588235, 0.0627451, 0.0666667, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TileMap" type="TileMap" parent="."]
+z_index = 100
+tile_set = ExtResource( 4 )
+cell_size = Vector2( 16, 16 )
+format = 1
+tile_data = PoolIntArray( 196612, 6, 0 )
+
+[node name="Spawner2" parent="." instance=ExtResource( 12 )]
+position = Vector2( 80, 68 )
+flip_h = true
+
+[node name="Static2" type="TileMap" parent="."]
+tile_set = ExtResource( 4 )
+cell_size = Vector2( 16, 16 )
+format = 1
+tile_data = PoolIntArray( 131076, 9, 65539, 131077, 9, 65540, 131078, 9, 65541, 196612, 7, 0 )
+
+[node name="Static3" type="TileMap" parent="."]
+z_index = -1
+tile_set = ExtResource( 4 )
+cell_size = Vector2( 16, 16 )
+format = 1
+tile_data = PoolIntArray( 196611, 9, 196608, 196612, 9, 196608, 196613, 9, 196608, 196614, 9, 196608, 196615, 9, 196608, 196616, 9, 196608, 196617, 9, 196608, 196618, 9, 196608, 196619, 9, 196608, 262147, 9, 196608, 262148, 9, 196608, 262149, 9, 196608, 262150, 9, 196608, 262151, 9, 196608, 262152, 9, 196608, 262153, 9, 196608, 262154, 9, 196608, 262155, 9, 196608, 327683, 9, 196608, 327684, 9, 196608, 327685, 9, 196608, 327686, 9, 196608, 327687, 9, 196608, 327688, 9, 196608, 327689, 9, 196608, 327690, 9, 196608, 327691, 9, 196608, 393219, 9, 196608, 393220, 9, 196608, 393221, 9, 196608, 393222, 9, 196608, 393223, 9, 196608, 393224, 9, 196608, 393225, 9, 196608, 393226, 9, 196608, 393227, 9, 196608, 458755, 9, 196608, 458756, 9, 196608, 458757, 9, 196608, 458758, 9, 196608, 458759, 9, 196608, 458760, 9, 196608, 458761, 9, 196608, 458762, 9, 196608, 458763, 9, 196608 )
+
+[node name="Dynamic" type="TileMap" parent="."]
+tile_set = ExtResource( 9 )
+cell_size = Vector2( 16, 16 )
+format = 1
+script = ExtResource( 10 )
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 13 )
+volume_db = -15.0
+autoplay = true
+bus = "Music"
+
+[node name="AmbiencePlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 7 )
+volume_db = -10.0
+autoplay = true
+
+[node name="ParkEvent" parent="." instance=ExtResource( 6 )]
+position = Vector2( -34, 152 )
+script = SubResource( 1 )
+auto_start = true

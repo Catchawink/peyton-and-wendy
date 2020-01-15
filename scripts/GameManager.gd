@@ -9,12 +9,14 @@ var pet
 var camera
 var inventory
 var reader
+var health_bar
 
 var scene
 var world_rect
 
 var is_pet_missing = false
 
+const Battering_Ram = "BatteringRam"
 const Wizard_Horse = "WizardHorse"
 const Peyton = "Peyton"
 const Wendy = "Wendy"
@@ -36,11 +38,13 @@ func _ready():
 	camera = camera_scene.instance()
 	add_child(camera)
 	camera.set_fade(true, true)
-	inventory = camera.get_node("StatsCanvas/Stats/Inventory")
-	reader = camera.get_node("StatsCanvas/Stats/Reader")
+	inventory = camera.get_node("StatsCanvas/Stats/Bottom/Inventory")
+	reader = camera.get_node("StatsCanvas/Stats/Bottom/Reader")
+	health_bar = camera.get_node("StatsCanvas/Stats/HealthBar")
 	world_rect = Rect2(-5000,5000,10000,10000)
 	
 	player = player_scene.instance()
+	player.connect("health_changed", self, "health_changed")
 	player.connect("died", self, "player_died")
 	add_child(player)
 	camera.set_target(player)
@@ -49,7 +53,10 @@ func _ready():
 	add_child(pet)
 	
 	load_scene()
-	
+
+func health_changed(health):
+	health_bar.set_health(health)
+
 func load_scene():
 	SaveManager.load_game()
 	camera.set_tint(Color(0,0,0,0), 0)
@@ -58,12 +65,10 @@ func load_scene():
 	else:
 		load_world()
 		
-func lock_input():
-	player.is_input_locked = true
+func set_lock_input(value):
+	player.set_lock_input(value)
+	pet.set_lock_input(value)
 
-func unlock_input():
-	player.is_input_locked = false
-		
 func get_character(character_name):
 	var characters = get_tree().get_nodes_in_group("characters")
 	for character in characters:
@@ -195,8 +200,8 @@ func load_world():
 		camera.set_bounds(world_rect)
 		create_boundary(world_rect)
 		camera.snap_position()
-
-		yield(get_tree(), "idle_frame")
+		yield(get_tree().create_timer(.25), "timeout")
+	#	yield(get_tree(), "idle_frame")
 		player.set_active(true)
 		if !is_pet_missing:
 			pet.set_active(true)
@@ -229,6 +234,12 @@ func create_boundary(world_rect):
 	collider_right.set_shape(shape_left)
 	collider_right.position = Vector2(world_rect.end.x+16, world_rect.position.y+world_rect.size.y/2)
 	
+func get_camera_rect():
+	var ctrans = get_canvas_transform()
+	var min_pos = -ctrans.get_origin() / ctrans.get_scale()
+	var view_size = get_viewport_rect().size / ctrans.get_scale()
+	return Rect2(min_pos, view_size)
+	
 func get_children_by_type(node, type):
 	var count = 0
 	var children = []
@@ -238,7 +249,9 @@ func get_children_by_type(node, type):
 
 	return children
 	
-func auto_indent(text, line_limit=13, tolerance = 0):
+func auto_indent(text, line_limit=20, tolerance = 0):
+	if line_limit == -1:
+		line_limit = 20
 	var line_length = 0
 	var last_index = -1
 	text += " "

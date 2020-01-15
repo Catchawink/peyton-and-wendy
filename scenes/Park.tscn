@@ -16,9 +16,16 @@
 [ext_resource path="res://scenes/characters/Dog.tscn" type="PackedScene" id=14]
 [ext_resource path="res://addons/RigidBodyParticles2D/RigidBodyParticles2D.tscn" type="PackedScene" id=15]
 
+[sub_resource type="StyleBoxEmpty" id=2]
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 500, 1 )
+
 [sub_resource type="GDScript" id=1]
 script/source = "extends \"res://scripts/Event.gd\"
 
+func _ready():
+	$Area2D
 # Called when the node enters the scene tree for the first time.
 func execute():
 	# left and right button guides appear. like this:
@@ -39,81 +46,98 @@ func execute():
 	yield(get_tree(), \"idle_frame\")
 	yield(get_tree().create_timer(2), \"timeout\")
 	GameManager.pickup(\"leash\", true)
-	if false:
-		yield(get_tree().create_timer(4), \"timeout\")
-		var sky = GameManager.scene.get_node(\"Sky/MarginContainer/Sky\")
-		TweenSequence.new(get_tree()).append(sky, \"modulate\", Color(\"#313131\"), 10).from_current()
-		var clouds = GameManager.scene.get_node(\"Sky/ParallaxClouds/Sprite\")
-		TweenSequence.new(get_tree()).append(clouds, \"modulate\",  Color(\"#161616\"), 10).from_current()
-		GameManager.camera.set_tint(Color(\"#5e1a1d33\"), 10)
-		yield(get_tree().create_timer(10), \"timeout\")
-		yield(player.speak(\"It's getting dark...\"), \"completed\")
-		yield(get_tree().create_timer(1), \"timeout\")
-		var particles = GameManager.scene.get_node(\"ParticleLayer/PanelContainer/Control/Rain\")
-		particles.amount = 1
-		particles.emitting = true
-		#thunder noise and flash, Peyton loses leash and Wendy runs off
-		SoundManager.play(\"rain\", 0, 1, 5)
-		for i in range(1, 500):
-			yield(get_tree().create_timer(10/500), \"timeout\")
-			particles.amount = i
+
+	yield(get_tree().create_timer(4), \"timeout\")
+	var sky = GameManager.scene.get_node(\"Sky/MarginContainer/Sky\")
+	TweenSequence.new(get_tree()).append(sky, \"modulate\", Color(\"#313131\"), 10).from_current()
+	var clouds = GameManager.scene.get_node(\"Sky/ParallaxClouds/Sprite\")
+	TweenSequence.new(get_tree()).append(clouds, \"modulate\",  Color(\"#161616\"), 10).from_current()
+	GameManager.camera.set_tint(Color(\"#5e1a1d33\"), 10)
+	yield(get_tree().create_timer(10), \"timeout\")
+	yield(player.speak(\"It's getting dark...\"), \"completed\")
+	yield(get_tree().create_timer(1), \"timeout\")
+	var particles = GameManager.scene.get_node(\"ParticleLayer/PanelContainer/Control/Rain\")
+	particles.amount = 1
+	particles.emitting = true
+	#thunder noise and flash, Peyton loses leash and Wendy runs off
+	SoundManager.play(\"rain\", 0, 1, 5)
+	for i in range(1, 500):
+		yield(get_tree().create_timer(10/500), \"timeout\")
+		particles.amount = i
 			
 	yield(player.speak(\"We should get going.\"), \"completed\")
 	yield(get_tree().create_timer(1), \"timeout\")
+	while !has_player:
+		yield(get_tree().create_timer(.1), \"timeout\")
+		
+	#lightning event
+	GameManager.set_lock_input(true)
+	yield(SoundManager.play(\"dog_bark\", -10, 2), \"completed\")
+	pet.set_target(null)
+	pet.move_to(Vector2(0,0))
+	while pet.is_visible():
+		yield(get_tree().create_timer(.1), \"timeout\")
 	GameManager.player.remove_item_by_name(\"leash\")
 	GameManager.is_pet_missing = true
 	pet.set_active(false)
-	yield(SoundManager.play(\"dog_bark\", -10, 2), \"completed\")
+	GameManager.set_lock_input(false)
+	
 	yield(get_tree().create_timer(.25), \"timeout\")
 	yield(player.speak(\"Wendy!\"), \"completed\")
 	yield(get_tree().create_timer(3), \"timeout\")
 	yield(player.speak(\"Where did she go...?\"), \"completed\")
 	yield(get_tree().create_timer(3), \"timeout\")
 	yield(player.speak(\"It's late...\"), \"completed\")
+	
+	while !has_player:
+		yield(get_tree().create_timer(.1), \"timeout\")
+		
+	GameManager.set_lock_input(true)
 	yield(player.speak(\"I'm going to rest for a second...\"), \"completed\")
 	yield(GameManager.player.set_sitting(true), \"completed\")
 	GameManager.player.set_sleeping(true)
 	yield(get_tree().create_timer(3), \"timeout\")
+	GameManager.set_lock_input(false)
 	GameManager.change_scene(\"PlainsA\")
 	#yield(GameManager.player.speak(\"Wow, what a view...\", false), \"completed\")
 	pass
 "
 
-[sub_resource type="StyleBoxEmpty" id=2]
-
-[sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 500, 1 )
-
 [node name="Park" type="Node2D"]
 
-[node name="TileMap" type="TileMap" parent="."]
-tile_set = ExtResource( 4 )
-cell_size = Vector2( 16, 16 )
-format = 1
-tile_data = PoolIntArray( 0, 0, 458753, 589827, 0, 327695, 589838, 0, 327695, 589840, 0, 327694, 589850, 0, 196619, 589851, 0, 393230, 589853, 0, 196619, 589854, 0, 327695, 589856, 0, 196619, 589857, 0, 393231, 655360, 0, 8, 655361, 0, 8, 655362, 0, 8, 655363, 0, 8, 655364, 0, 8, 655365, 0, 8, 655366, 0, 8, 655367, 0, 8, 655368, 0, 8, 655369, 0, 8, 655370, 0, 8, 655371, 0, 8, 655372, 0, 8, 655373, 0, 8, 655374, 0, 8, 655375, 0, 8, 655376, 0, 8, 655377, 0, 8, 655378, 0, 8, 655379, 0, 8, 655380, 0, 8, 655381, 0, 8, 655382, 0, 8, 655383, 0, 8, 655384, 0, 8, 655385, 0, 8, 655386, 0, 8, 655387, 0, 8, 655388, 0, 8, 655389, 0, 8, 655390, 0, 8, 655391, 0, 8, 655392, 0, 8, 655393, 0, 8, 655394, 0, 8, 655395, 0, 8, 655396, 0, 8, 655397, 0, 8, 655398, 0, 8, 655399, 0, 8, 720896, 0, 65547, 720897, 0, 65547, 720898, 0, 65547, 720899, 0, 65547, 720900, 0, 65547, 720901, 0, 65547, 720902, 0, 65547, 720903, 0, 65547, 720904, 0, 65547, 720905, 0, 65547, 720906, 0, 65547, 720907, 0, 65547, 720908, 0, 65547, 720909, 0, 65547, 720910, 0, 65547, 720911, 0, 65547, 720912, 0, 65547, 720913, 0, 65547, 720914, 0, 65547, 720915, 0, 65547, 720916, 0, 65547, 720917, 0, 65547, 720918, 0, 65547, 720919, 0, 65547, 720920, 0, 65547, 720921, 0, 65547, 720922, 0, 65547, 720923, 0, 65547, 720924, 0, 65547, 720925, 0, 65547, 720926, 0, 65547, 720927, 0, 65547, 720928, 0, 65547, 720929, 0, 65547, 720930, 0, 65547, 720931, 0, 65547, 720932, 0, 65547, 720933, 0, 65547, 720934, 0, 65547, 720935, 0, 65547, 786432, 0, 65547, 786433, 0, 65547, 786434, 0, 65547, 786435, 0, 65547, 786436, 0, 65547, 786437, 0, 65547, 786438, 0, 65547, 786439, 0, 65547, 786440, 0, 65547, 786441, 0, 65547, 786442, 0, 65547, 786443, 0, 65547, 786444, 0, 65547, 786445, 0, 65547, 786446, 0, 65547, 786447, 0, 65547, 786448, 0, 65547, 786449, 0, 65547, 786450, 0, 65547, 786451, 0, 65547, 786452, 0, 65547, 786453, 0, 65547, 786454, 0, 65547, 786455, 0, 65547, 786456, 0, 65547, 786457, 0, 65547, 786458, 0, 65547, 786459, 0, 65547, 786460, 0, 65547, 786461, 0, 65547, 786462, 0, 65547, 786463, 0, 65547, 786464, 0, 65547, 786465, 0, 65547, 786466, 0, 65547, 786467, 0, 65547, 786468, 0, 65547, 786469, 0, 65547, 786470, 0, 65547, 786471, 0, 65547, 851968, 0, 65547, 851969, 0, 65547, 851970, 0, 65547, 851971, 0, 65547, 851972, 0, 65547, 851973, 0, 65547, 851974, 0, 65547, 851975, 0, 65547, 851976, 0, 65547, 851977, 0, 65547, 851978, 0, 65547, 851979, 0, 65547, 851980, 0, 65547, 851981, 0, 65547, 851982, 0, 65547, 851983, 0, 65547, 851984, 0, 65547, 851985, 0, 65547, 851986, 0, 65547, 851987, 0, 65547, 851988, 0, 65547, 851989, 0, 65547, 851990, 0, 65547, 851991, 0, 65547, 851992, 0, 65547, 851993, 0, 65547, 851994, 0, 65547, 851995, 0, 65547, 851996, 0, 65547, 851997, 0, 65547, 851998, 0, 65547, 851999, 0, 65547, 852000, 0, 65547, 852001, 0, 65547, 852002, 0, 65547, 852003, 0, 65547, 852004, 0, 65547, 852005, 0, 65547, 852006, 0, 65547, 852007, 0, 65547, 917504, 0, 65547, 917505, 0, 65547, 917506, 0, 65547, 917507, 0, 65547, 917508, 0, 65547, 917509, 0, 65547, 917510, 0, 65547, 917511, 0, 65547, 917512, 0, 65547, 917513, 0, 65547, 917514, 0, 65547, 917515, 0, 65547, 917516, 0, 65547, 917517, 0, 65547, 917518, 0, 65547, 917519, 0, 65547, 917520, 0, 65547, 917521, 0, 65547, 917522, 0, 65547, 917523, 0, 65547, 917524, 0, 65547, 917525, 0, 65547, 917526, 0, 65547, 917527, 0, 65547, 917528, 0, 65547, 917529, 0, 65547, 917530, 0, 65547, 917531, 0, 65547, 917532, 0, 65547, 917533, 0, 65547, 917534, 0, 65547, 917535, 0, 65547, 917536, 0, 65547, 917537, 0, 65547, 917538, 0, 65547, 917539, 0, 65547, 917540, 0, 65547, 917541, 0, 65547, 917542, 0, 65547, 917543, 0, 65547, 983040, 0, 65547, 983041, 0, 65547, 983042, 0, 65547, 983043, 0, 65547, 983044, 0, 65547, 983045, 0, 65547, 983046, 0, 65547, 983047, 0, 65547, 983048, 0, 65547, 983049, 0, 65547, 983050, 0, 65547, 983051, 0, 65547, 983052, 0, 65547, 983053, 0, 65547, 983054, 0, 65547, 983055, 0, 65547, 983056, 0, 65547, 983057, 0, 65547, 983058, 0, 65547, 983059, 0, 65547, 983060, 0, 65547, 983061, 0, 65547, 983062, 0, 65547, 983063, 0, 65547, 983064, 0, 65547, 983065, 0, 65547, 983066, 0, 65547, 983067, 0, 65547, 983068, 0, 65547, 983069, 0, 65547, 983070, 0, 65547, 983071, 0, 65547, 983072, 0, 65547, 983073, 0, 65547, 983074, 0, 65547, 983075, 0, 65547, 983076, 0, 65547, 983077, 0, 65547, 983078, 0, 65547, 983079, 0, 65547, 1048576, 0, 65547, 1048577, 0, 65547, 1048578, 0, 65547, 1048579, 0, 65547, 1048580, 0, 65547, 1048581, 0, 65547, 1048582, 0, 65547, 1048583, 0, 65547, 1048584, 0, 65547, 1048585, 0, 65547, 1048586, 0, 65547, 1048587, 0, 65547, 1048588, 0, 65547, 1048589, 0, 65547, 1048590, 0, 65547, 1048591, 0, 65547, 1048592, 0, 65547, 1048593, 0, 65547, 1048594, 0, 65547, 1048595, 0, 65547, 1048596, 0, 65547, 1048597, 0, 65547, 1048598, 0, 65547, 1048599, 0, 65547, 1048600, 0, 65547, 1048601, 0, 65547, 1048602, 0, 65547, 1048603, 0, 65547, 1048604, 0, 65547, 1048605, 0, 65547, 1048606, 0, 65547, 1048607, 0, 65547, 1048608, 0, 65547, 1048609, 0, 65547, 1048610, 0, 65547, 1048611, 0, 65547, 1048612, 0, 65547, 1048613, 0, 65547, 1048614, 0, 65547, 1048615, 0, 65547 )
+[node name="ParticleLayer" type="CanvasLayer" parent="."]
 
-[node name="Static2" type="TileMap" parent="."]
-tile_set = ExtResource( 4 )
-cell_size = Vector2( 16, 16 )
-format = 1
-tile_data = PoolIntArray( 589824, 0, 196619, 589828, 0, 393232, 589830, 0, 196619, 589832, 0, 131086, 589833, 0, 131087, 589834, 0, 131087, 589835, 0, 196619, 589836, 0, 327695, 589837, 0, 131086, 589838, 0, 131087, 589839, 0, 131088, 589841, 0, 327696, 589842, 0, 327694, 589843, 0, 196619 )
+[node name="PanelContainer" type="PanelContainer" parent="ParticleLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 14.0
+margin_bottom = 14.0
+custom_styles/panel = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="Dynamic" type="TileMap" parent="."]
-tile_set = ExtResource( 9 )
-cell_size = Vector2( 16, 16 )
-format = 1
-script = ExtResource( 10 )
+[node name="Control" type="Control" parent="ParticleLayer/PanelContainer"]
+margin_left = 167.0
+margin_right = 167.0
+size_flags_horizontal = 4
+size_flags_vertical = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 13 )
-volume_db = -15.0
-autoplay = true
-bus = "Music"
-
-[node name="AmbiencePlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 7 )
-volume_db = -10.0
-autoplay = true
+[node name="Rain" parent="ParticleLayer/PanelContainer/Control" instance=ExtResource( 15 )]
+position = Vector2( 200, 0 )
+z_index = -1
+emitting = false
+amount = 300
+particle_scene = ExtResource( 8 )
+emission_shape = SubResource( 3 )
+lifetime = 5.0
+impulse = 0.0
+force = 100.0
+force_angle_degrees = 110.0
+initial_rotation_degrees = 110.0
 
 [node name="Sky" type="ParallaxBackground" parent="."]
 
@@ -161,51 +185,48 @@ motion_mirroring = Vector2( 616, 0 )
 z_index = -100
 texture = ExtResource( 5 )
 
+[node name="Map" type="TileMap" parent="."]
+tile_set = ExtResource( 4 )
+cell_size = Vector2( 16, 16 )
+format = 1
+tile_data = PoolIntArray( 0, 0, 458753, 589827, 0, 327695, 589838, 0, 327695, 589840, 0, 327694, 589850, 0, 196619, 589851, 0, 393230, 589853, 0, 196619, 589854, 0, 327695, 589856, 0, 196619, 589857, 0, 393231, 655360, 0, 8, 655361, 0, 8, 655362, 0, 8, 655363, 0, 8, 655364, 0, 8, 655365, 0, 8, 655366, 0, 8, 655367, 0, 8, 655368, 0, 8, 655369, 0, 8, 655370, 0, 8, 655371, 0, 8, 655372, 0, 8, 655373, 0, 8, 655374, 0, 8, 655375, 0, 8, 655376, 0, 8, 655377, 0, 8, 655378, 0, 8, 655379, 0, 8, 655380, 0, 8, 655381, 0, 8, 655382, 0, 8, 655383, 0, 8, 655384, 0, 8, 655385, 0, 8, 655386, 0, 8, 655387, 0, 8, 655388, 0, 8, 655389, 0, 8, 655390, 0, 8, 655391, 0, 8, 655392, 0, 8, 655393, 0, 8, 655394, 0, 8, 655395, 0, 8, 655396, 0, 8, 655397, 0, 8, 655398, 0, 8, 655399, 0, 8, 720896, 0, 65547, 720897, 0, 65547, 720898, 0, 65547, 720899, 0, 65547, 720900, 0, 65547, 720901, 0, 65547, 720902, 0, 65547, 720903, 0, 65547, 720904, 0, 65547, 720905, 0, 65547, 720906, 0, 65547, 720907, 0, 65547, 720908, 0, 65547, 720909, 0, 65547, 720910, 0, 65547, 720911, 0, 65547, 720912, 0, 65547, 720913, 0, 65547, 720914, 0, 65547, 720915, 0, 65547, 720916, 0, 65547, 720917, 0, 65547, 720918, 0, 65547, 720919, 0, 65547, 720920, 0, 65547, 720921, 0, 65547, 720922, 0, 65547, 720923, 0, 65547, 720924, 0, 65547, 720925, 0, 65547, 720926, 0, 65547, 720927, 0, 65547, 720928, 0, 65547, 720929, 0, 65547, 720930, 0, 65547, 720931, 0, 65547, 720932, 0, 65547, 720933, 0, 65547, 720934, 0, 65547, 720935, 0, 65547, 786432, 0, 65547, 786433, 0, 65547, 786434, 0, 65547, 786435, 0, 65547, 786436, 0, 65547, 786437, 0, 65547, 786438, 0, 65547, 786439, 0, 65547, 786440, 0, 65547, 786441, 0, 65547, 786442, 0, 65547, 786443, 0, 65547, 786444, 0, 65547, 786445, 0, 65547, 786446, 0, 65547, 786447, 0, 65547, 786448, 0, 65547, 786449, 0, 65547, 786450, 0, 65547, 786451, 0, 65547, 786452, 0, 65547, 786453, 0, 65547, 786454, 0, 65547, 786455, 0, 65547, 786456, 0, 65547, 786457, 0, 65547, 786458, 0, 65547, 786459, 0, 65547, 786460, 0, 65547, 786461, 0, 65547, 786462, 0, 65547, 786463, 0, 65547, 786464, 0, 65547, 786465, 0, 65547, 786466, 0, 65547, 786467, 0, 65547, 786468, 0, 65547, 786469, 0, 65547, 786470, 0, 65547, 786471, 0, 65547, 851968, 0, 65547, 851969, 0, 65547, 851970, 0, 65547, 851971, 0, 65547, 851972, 0, 65547, 851973, 0, 65547, 851974, 0, 65547, 851975, 0, 65547, 851976, 0, 65547, 851977, 0, 65547, 851978, 0, 65547, 851979, 0, 65547, 851980, 0, 65547, 851981, 0, 65547, 851982, 0, 65547, 851983, 0, 65547, 851984, 0, 65547, 851985, 0, 65547, 851986, 0, 65547, 851987, 0, 65547, 851988, 0, 65547, 851989, 0, 65547, 851990, 0, 65547, 851991, 0, 65547, 851992, 0, 65547, 851993, 0, 65547, 851994, 0, 65547, 851995, 0, 65547, 851996, 0, 65547, 851997, 0, 65547, 851998, 0, 65547, 851999, 0, 65547, 852000, 0, 65547, 852001, 0, 65547, 852002, 0, 65547, 852003, 0, 65547, 852004, 0, 65547, 852005, 0, 65547, 852006, 0, 65547, 852007, 0, 65547, 917504, 0, 65547, 917505, 0, 65547, 917506, 0, 65547, 917507, 0, 65547, 917508, 0, 65547, 917509, 0, 65547, 917510, 0, 65547, 917511, 0, 65547, 917512, 0, 65547, 917513, 0, 65547, 917514, 0, 65547, 917515, 0, 65547, 917516, 0, 65547, 917517, 0, 65547, 917518, 0, 65547, 917519, 0, 65547, 917520, 0, 65547, 917521, 0, 65547, 917522, 0, 65547, 917523, 0, 65547, 917524, 0, 65547, 917525, 0, 65547, 917526, 0, 65547, 917527, 0, 65547, 917528, 0, 65547, 917529, 0, 65547, 917530, 0, 65547, 917531, 0, 65547, 917532, 0, 65547, 917533, 0, 65547, 917534, 0, 65547, 917535, 0, 65547, 917536, 0, 65547, 917537, 0, 65547, 917538, 0, 65547, 917539, 0, 65547, 917540, 0, 65547, 917541, 0, 65547, 917542, 0, 65547, 917543, 0, 65547, 983040, 0, 65547, 983041, 0, 65547, 983042, 0, 65547, 983043, 0, 65547, 983044, 0, 65547, 983045, 0, 65547, 983046, 0, 65547, 983047, 0, 65547, 983048, 0, 65547, 983049, 0, 65547, 983050, 0, 65547, 983051, 0, 65547, 983052, 0, 65547, 983053, 0, 65547, 983054, 0, 65547, 983055, 0, 65547, 983056, 0, 65547, 983057, 0, 65547, 983058, 0, 65547, 983059, 0, 65547, 983060, 0, 65547, 983061, 0, 65547, 983062, 0, 65547, 983063, 0, 65547, 983064, 0, 65547, 983065, 0, 65547, 983066, 0, 65547, 983067, 0, 65547, 983068, 0, 65547, 983069, 0, 65547, 983070, 0, 65547, 983071, 0, 65547, 983072, 0, 65547, 983073, 0, 65547, 983074, 0, 65547, 983075, 0, 65547, 983076, 0, 65547, 983077, 0, 65547, 983078, 0, 65547, 983079, 0, 65547, 1048576, 0, 65547, 1048577, 0, 65547, 1048578, 0, 65547, 1048579, 0, 65547, 1048580, 0, 65547, 1048581, 0, 65547, 1048582, 0, 65547, 1048583, 0, 65547, 1048584, 0, 65547, 1048585, 0, 65547, 1048586, 0, 65547, 1048587, 0, 65547, 1048588, 0, 65547, 1048589, 0, 65547, 1048590, 0, 65547, 1048591, 0, 65547, 1048592, 0, 65547, 1048593, 0, 65547, 1048594, 0, 65547, 1048595, 0, 65547, 1048596, 0, 65547, 1048597, 0, 65547, 1048598, 0, 65547, 1048599, 0, 65547, 1048600, 0, 65547, 1048601, 0, 65547, 1048602, 0, 65547, 1048603, 0, 65547, 1048604, 0, 65547, 1048605, 0, 65547, 1048606, 0, 65547, 1048607, 0, 65547, 1048608, 0, 65547, 1048609, 0, 65547, 1048610, 0, 65547, 1048611, 0, 65547, 1048612, 0, 65547, 1048613, 0, 65547, 1048614, 0, 65547, 1048615, 0, 65547 )
+
+[node name="Static2" type="TileMap" parent="."]
+visible = false
+tile_set = ExtResource( 4 )
+cell_size = Vector2( 16, 16 )
+format = 1
+tile_data = PoolIntArray( 589824, 0, 196619, 589828, 0, 393232, 589830, 0, 196619, 589832, 0, 131086, 589833, 0, 131087, 589834, 0, 131087, 589835, 0, 196619, 589836, 0, 327695, 589837, 0, 131086, 589838, 0, 131087, 589839, 0, 131088, 589841, 0, 327696, 589842, 0, 327694, 589843, 0, 196619 )
+
+[node name="Dynamic" type="TileMap" parent="."]
+visible = false
+tile_set = ExtResource( 9 )
+cell_size = Vector2( 16, 16 )
+format = 1
+script = ExtResource( 10 )
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 13 )
+volume_db = -15.0
+autoplay = true
+bus = "Music"
+
+[node name="AmbiencePlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 7 )
+volume_db = -10.0
+autoplay = true
+
 [node name="Spawner" parent="." instance=ExtResource( 12 )]
 position = Vector2( 100, 160 )
 
 [node name="ParkEvent" parent="." instance=ExtResource( 6 )]
-position = Vector2( -34, 152 )
+position = Vector2( 366, 144 )
 script = SubResource( 1 )
 auto_start = true
 
 [node name="tree" type="Sprite" parent="."]
 position = Vector2( 398, 115 )
 texture = ExtResource( 2 )
-
-[node name="ParticleLayer" type="CanvasLayer" parent="."]
-
-[node name="PanelContainer" type="PanelContainer" parent="ParticleLayer"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_right = 14.0
-margin_bottom = 14.0
-custom_styles/panel = SubResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Control" type="Control" parent="ParticleLayer/PanelContainer"]
-margin_left = 167.0
-margin_right = 167.0
-size_flags_horizontal = 4
-size_flags_vertical = 0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Rain" parent="ParticleLayer/PanelContainer/Control" instance=ExtResource( 15 )]
-position = Vector2( 200, 0 )
-z_index = -1
-emitting = false
-amount = 300
-particle_scene = ExtResource( 8 )
-emission_shape = SubResource( 3 )
-lifetime = 5.0
-impulse = 0.0
-force = 100.0
-force_angle_degrees = 110.0
-initial_rotation_degrees = 110.0
 
 [node name="Dog" parent="." instance=ExtResource( 14 )]
 position = Vector2( 193.845, 160 )

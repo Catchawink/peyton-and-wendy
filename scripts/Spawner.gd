@@ -4,7 +4,7 @@ tool extends Node2D
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
-
+export(PackedScene) var object
 export var scene_name = ""
 export var path_name = ""
 export var flip_h = false
@@ -16,8 +16,13 @@ func _ready():
 
 func on_ready():
 	if !Engine.editor_hint:
-		visible = false
+		$Sprite.visible = false
 	pass
+	
+func spawn():
+	var spawned_object = object.instance()
+	add_child(spawned_object)
+	spawned_object.global_position = global_position
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

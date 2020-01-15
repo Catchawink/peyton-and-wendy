@@ -48,7 +48,6 @@ flip_h = true
 
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 7, -1 )
-rotation = 1.5708
 z_index = 1
 texture = ExtResource( 1 )
 offset = Vector2( -7, -7 )

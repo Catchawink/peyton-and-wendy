@@ -16,20 +16,22 @@ func get_node_data(node, use_path = true):
 	if use_path:
 		data["path"] = node.get_path()
 	data["filename"] = node.get_filename()
-	data["pos_x"] = node.position.x
-	data["pos_y"] = node.position.y
 	
 	for property_name in auto_save:
 		data[property_name] = node.get(property_name)
 		
 	if node.has_method("saved"):
 		for property_name in node.call("saved"):
-			var value = null
-			if node.get(property_name) is Resource:
-				value = node.get(property_name).get_path()
+			if property_name == "position":
+				data["pos_x"] = node.position.x
+				data["pos_y"] = node.position.y
 			else:
-				value = node.get(property_name)
-			data[property_name] = value
+				var value = null
+				if node.get(property_name) is Resource:
+					value = node.get(property_name).get_path()
+				else:
+					value = node.get(property_name)
+				data[property_name] = value
 	return data
 	
 func get_scene_data():
@@ -85,15 +87,19 @@ func set_node_data(data):
 		node = get_node(data["path"])
 	else:
 		node = load(data["filename"]).instance()
-	node.position = Vector2(data["pos_x"], data["pos_y"])
+
 	# Now we set the remaining variables.
-	#print("LOADING " + node.name)
+	print("LOADING " + node.name)
 	for property_name in data.keys():
-		if property_name == "filename" or property_name == "path" or property_name == "pos_x" or property_name == "pos_y":
+		if property_name == "filename" or property_name == "path":
 			continue
 		var value = data[property_name]
-		#print(property_name + ", " + str(value))
-		if property_name == "script":
+		print(property_name + ", " + str(value))
+		if property_name == "pos_x":
+			node.position.x = value
+		elif property_name == "pos_y":
+			node.position.y = value
+		elif property_name == "script":
 			node.set(property_name, load(value))
 			#node.get_script().set_source_code(load(value).get_source_code())
 			#node.get_script().reload(true)
@@ -105,7 +111,7 @@ func set_node_data(data):
 	else:
 		GameManager.scene.call_deferred("add_child",node)
 	return node
-		
+	
 func unsave(node):
 	if node.is_in_group("saved"):
 		node.remove_from_group("saved")

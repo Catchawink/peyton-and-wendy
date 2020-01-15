@@ -7,8 +7,8 @@ export(String, MULTILINE) var comment = ""
 # var b = "text"
 
 func start_use():
-	GameManager.lock_input()
+	GameManager.set_lock_input(true)
 	yield(GameManager.player.speak("'"+text+"'"), "completed")
 	if len(comment) > 0:
 		yield(GameManager.player.speak(comment), "completed")
-	GameManager.unlock_input()
+	GameManager.set_lock_input(false)

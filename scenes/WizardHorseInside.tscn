@@ -129,14 +129,22 @@ func execute():
 		yield(wizard_horse.speak(\"That's the brew!\"), \"completed\")
 		yield(wizard_horse.speak(\"It has strong restorative powers.\"), \"completed\")
 		
+	pet.sneeze()
 	SoundManager.play(\"dog_sneeze\", -20, 2)
-	yield(get_tree().create_timer(1.5), \"timeout\")
+	yield(get_tree().create_timer(.5), \"timeout\")
+	wizard_horse.set_target(pet)
+	player.set_target(pet)
+	yield(get_tree().create_timer(.5), \"timeout\")
+	pet.taunt(true)
 	yield(SoundManager.play(\"dog_bark\", -15, 1.6), \"completed\")
+	pet.sneeze()
 	SoundManager.play(\"dog_sneeze\", -20, 2.5)
 	yield(get_tree().create_timer(1), \"timeout\")
 	# wendy sneeze
 	yield(wizard_horse.speak(\"...She might be allergic to it.\"), \"completed\")
+	pet.taunt(true)
 	yield(SoundManager.play(\"dog_bark\", -10, 2), \"completed\")
+	pet.sneeze()
 	SoundManager.play(\"dog_sneeze\", -15, 2.5)
 	pet.start_flying()
 	yield(get_tree().create_timer(.75), \"timeout\")
@@ -152,6 +160,9 @@ func execute():
 	yield(get_tree().create_timer(.5), \"timeout\")
 	yield(wizard_horse.speak(\"...\"), \"completed\")
 	yield(wizard_horse.speak(\"Oh no...\"), \"completed\")
+	pet.can_fly = true
+	wizard_horse.set_target(null)
+	player.set_target(null)
 	pass
 "
 
@@ -267,7 +278,7 @@ playing = true
 position = Vector2( 0, -6 )
 z_index = -2
 frames = SubResource( 3 )
-frame = 3
+frame = 5
 speed_scale = 0.5
 playing = true
 flip_h = true

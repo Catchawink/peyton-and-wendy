@@ -5,7 +5,7 @@ var ideal_distance = 0
 var max_distance = 10000
 const leash_distance = 32
 const aware_distance = 48
-var can_fly = true
+var can_fly = false
 
 func init():
 	.init()
@@ -46,7 +46,13 @@ func is_object_visible(object):
 	if can_fly:
 		return true
 	else:
-		return .is_object_visible(object)
+		if object.global_position.distance_to(get_center_pos()) < aware_distance:
+			return .is_object_visible(object)
+		else:
+			return false
+	
+func set_can_fly(value):
+	can_fly = value
 	
 func process_input(delta):
 	var input_velocity = Vector2(0,0)
@@ -75,10 +81,8 @@ func process_input(delta):
 		_target = bone
 	elif is_object_visible(GameManager.player):
 		_target = player
-	else:
-		_target = enemy
 	
-	var dist = _target.global_position.distance_to(get_center_pos())
+	var dist = _target.global_position.distance_to(get_center_pos()) if _target else 0
 	var dist_x = abs(_target.global_position.x - global_position.x) if _target else 0
 	var dist_y = abs(_target.global_position.y - global_position.y) if _target else 0
 	
@@ -92,7 +96,7 @@ func process_input(delta):
 		elif !is_flying or fly_time > .5:
 			is_flying = false
 		
-	if is_flying:
+	if is_flying and can_fly:
 		z_index = player.z_index + 100
 		dist = player.get_center_pos().distance_to(get_center_pos())
 		var dif = (player.get_center_pos()+Vector2(((player.width/2)+(width/2)+4)*-player.get_flip_sign(), height/2)-position)
@@ -103,13 +107,11 @@ func process_input(delta):
 		set_target(player)
 	else:
 		set_target(_target)
-		if _target:
+		if _target and !is_edge() and dist_x > width/2+8 and !is_wall():
 			if _target.global_position.x < global_position.x:
-				if !is_edge() and dist_x > width/2+8:
-					input_velocity.x += -speed
+				input_velocity.x += -speed
 			if _target.global_position.x > global_position.x:
-				if !is_edge() and dist_x > width/2+8:
-					input_velocity.x += speed
+				input_velocity.x += speed
 		"""
 		if dist_x > ideal_distance and is_player_visible():
 			set_target(player)

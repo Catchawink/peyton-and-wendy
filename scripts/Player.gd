@@ -4,7 +4,6 @@ signal called
 var animations = {}
 var replace_color = Color("#d69663")
 var handle_offset = Vector2(4,10)
-var is_input_locked = false
 
 func init():
 	run_frames = [1, 4]

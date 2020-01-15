@@ -10,7 +10,7 @@ func process_input(delta):
 	if not player or !is_object_visible(GameManager.player):
 		return input_velocity
 		
-	var x_dist = abs(player.position.x - position.x)
+	var x_dist = abs(player.global_position.x - global_position.x)
 
 	if x_dist < (width/2)+8:
 		can_attack = true
@@ -25,11 +25,11 @@ func process_input(delta):
 			attack()
 		
 	if !is_attacking:
-		if player.position.x < position.x:
+		if player.global_position.x < global_position.x:
 			$AnimatedSprite.flip_h = true
 			if x_dist > (width/2):
 				input_velocity.x += -speed
-		if player.position.x > position.x:
+		if player.global_position.x > global_position.x:
 			$AnimatedSprite.flip_h = false
 			if x_dist > (width/2):
 				input_velocity.x += speed

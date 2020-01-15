@@ -44,7 +44,7 @@ var is_active = true
 var is_physics_active = true
 var default_collision_mask
 var default_collision_layer
-var use_gravity = true
+export(bool) var use_gravity = true
 
 var is_flying = false
 
@@ -91,6 +91,9 @@ func stop_flying():
 	is_flying = false
 	z_index = default_z_index
 
+func sneeze():
+	yield(animate_override("sneeze"), "completed")
+	
 func attack():
 	if is_damaging or is_dead:
 		return
@@ -140,7 +143,7 @@ func set_sitting(value, is_immediate=false):
 	
 func is_wall():
 	var space_state = get_world_2d().direct_space_state
-	var end_position = get_center_pos()+Vector2(get_flip_sign()*(width/2+16),0)
+	var end_position = get_center_pos()+Vector2(get_flip_sign()*(width/2+1),0)
 	var result = space_state.intersect_ray(get_center_pos(), end_position, [self], ~2)
 	
 	if result.empty():
@@ -164,14 +167,28 @@ func init():
 	speech_bubble.set_global_position(get_top_pos()+Vector2(14,-7))
 	animate("idle")
 	
+var is_input_locked = false
+
+func set_lock_input(value):
+	is_input_locked = value
+
 func animation_finished():
 	pass
 	
-func speak(text, use_input = true):
-	yield(speech_bubble.speak(text, use_input), "completed")
+func raise():
+	yield(animate_override("raise"), "completed")
+	
+func speak(text, use_input = true, interrupt=false, line_limit=-1, accelerate=false):
+	yield(speech_bubble.speak(text, use_input, interrupt, line_limit, accelerate), "completed")
 	
 func silence():
 	speech_bubble.silence()
+	
+func get_rect():
+	return Rect2(get_top_pos()+Vector2(-width/2, 0), Vector2(width, height))
+	
+func is_visible():
+	return GameManager.get_camera_rect().intersects(get_rect())
 	
 func process_input(delta):
 	return Vector2(0,0)
@@ -186,9 +203,10 @@ func get_flip_sign(value=null):
 		value = is_flipped
 	return (-1 if value else 1)
 	
-func taunt():
-	$TauntPlayer.pitch_scale = rand_range(taunt_pitch-.1, taunt_pitch+.1)
-	$TauntPlayer.play()
+func taunt(is_muted=false):
+	if !is_muted:
+		$TauntPlayer.pitch_scale = rand_range(taunt_pitch-.1, taunt_pitch+.1)
+		$TauntPlayer.play()
 	yield(animate_override("taunt"), "completed")
 
 func cancel_override():
@@ -210,10 +228,6 @@ func wait_for_frame(frame):
 	
 var push = 0
 var player
-	
-func reset():
-	health = default_health
-	is_dead = false
 
 func on_set_player():
 	pass
@@ -262,6 +276,10 @@ func get_ground(distance=2):
 		return result.collider
 	return null
 	
+var move_to_pos = null
+func move_to(pos):
+	move_to_pos = pos
+	
 func is_object_visible(object):
 	var space_state = get_world_2d().direct_space_state
 	var result = space_state.intersect_ray(get_top_pos(), object.global_position, [self], ~2)
@@ -284,10 +302,8 @@ func _physics_process(delta):
 		
 	if is_flying or is_climbing:
 		set_collisions_active(false)
-		use_gravity = false
 	else:
 		set_collisions_active(is_active)
-		use_gravity = is_active
 	set_physics_active(is_active)
 
 	if not is_active or !GameManager.is_active:
@@ -311,7 +327,16 @@ func _physics_process(delta):
 			taunt()
 		
 	var input_velocity = Vector2(0,0)
-	if !is_dead and !is_damaging and !is_sitting:
+	if move_to_pos != null:
+		var x_dif = move_to_pos.x-global_position.x
+		if x_dif > 0:
+			input_velocity.x = speed
+		elif x_dif < 0:
+			input_velocity.x = -speed
+		else:
+			input_velocity.x = 0
+		input_velocity.y = 0
+	elif !is_dead and !is_damaging and !is_sitting and !is_input_locked:
 		input_velocity = process_input(delta)
 		
 	var new_ground = get_ground()
@@ -368,14 +393,14 @@ func _physics_process(delta):
 				animate("fall")
 	
 	if target:
-		var dist_x = target.position.x-position.x
+		var dist_x = target.global_position.x-global_position.x
 		if abs(dist_x) > 2:
 			$AnimatedSprite.flip_h = dist_x < 0
 	elif velocity.x != 0:
 		$AnimatedSprite.flip_h = (velocity.x < 0)
 
 	is_flipped = $AnimatedSprite.flip_h
-	if !is_climbing and !is_flying and use_gravity:
+	if use_gravity and !is_climbing and !is_flying:
 		velocity.y += GRAVITY
 	
 	if is_on_floor():

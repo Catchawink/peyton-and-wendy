@@ -1,0 +1,70 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://scripts/Character.gd" type="Script" id=1]
+[ext_resource path="res://battering_ram/idle/sprite_1.png" type="Texture" id=2]
+[ext_resource path="res://battering_ram/idle/sprite_0.png" type="Texture" id=3]
+[ext_resource path="res://sfx/step_rock.wav" type="AudioStream" id=4]
+[ext_resource path="res://battering_ram/taunt/sprite_1.png" type="Texture" id=5]
+[ext_resource path="res://battering_ram/taunt/sprite_2.png" type="Texture" id=6]
+[ext_resource path="res://sfx/laugh_a.wav" type="AudioStream" id=7]
+[ext_resource path="res://battering_ram/taunt/sprite_0.png" type="Texture" id=8]
+[ext_resource path="res://battering_ram/raise/sprite_1.png" type="Texture" id=9]
+[ext_resource path="res://battering_ram/raise/sprite_2.png" type="Texture" id=10]
+[ext_resource path="res://battering_ram/raise/sprite_0.png" type="Texture" id=11]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 5, 13 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 3 ), ExtResource( 2 ) ],
+"loop": true,
+"name": "idle",
+"speed": 2.0
+}, {
+"frames": [ ExtResource( 11 ), ExtResource( 9 ), ExtResource( 10 ) ],
+"loop": true,
+"name": "raise",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 8 ), ExtResource( 5 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "taunt",
+"speed": 5.0
+} ]
+
+[node name="BatteringRam" type="KinematicBody2D" groups=[
+"characters",
+]]
+position = Vector2( -5, 28 )
+collision_layer = 0
+collision_mask = 0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+height = 26
+use_gravity = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 1, -13 )
+shape = SubResource( 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 1, 0 )
+frames = SubResource( 2 )
+animation = "taunt"
+frame = 1
+playing = true
+centered = false
+offset = Vector2( -16, -32 )
+
+[node name="StepPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 4 )
+bus = "SFX"
+
+[node name="TauntPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 7 )
+volume_db = -10.0
+attenuation = 4.28709
+bus = "SFX"
