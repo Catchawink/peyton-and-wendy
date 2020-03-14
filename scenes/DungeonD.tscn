@@ -93,7 +93,6 @@ bus = "SFX"
 
 [node name="CompositeSwitch" parent="." instance=ExtResource( 2 )]
 position = Vector2( 216, 128 )
-target_a = NodePath("../../Dungeon/RightDoor")
 is_permanent = true
 source_a = NodePath("../../Dungeon/LeftButton")
 source_b = NodePath("../../Dungeon/RightButton")

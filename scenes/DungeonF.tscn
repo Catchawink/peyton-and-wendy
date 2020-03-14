@@ -23,10 +23,12 @@ func _ready():
 	
 func is_valid():
 	return GameManager.inventory.has(\"gem\")
-	
+
+var enemies = []
+
 func spawn_enemy():
 	battering_ram.raise()
-	spawner.spawn()
+	enemies.append(spawner.spawn())
 	
 func execute():
 	GameManager.set_lock_input(true)
@@ -37,19 +39,20 @@ func execute():
 	yield(GameManager.scene.get_node(\"Map/Platform\").set_on(true), \"completed\")
 	battering_ram.taunt()
 	yield(battering_ram.speak(\"Ah ha!\"), \"completed\")
-	yield(battering_ram.speak(\"So you're the one snooping around my basement!\"), \"completed\")
-	yield(player.speak(\"...I didn't even know this was yours.\"), \"completed\")
-	battering_ram.taunt()
-	yield(battering_ram.speak(\"You're joking!\"), \"completed\")
-	yield(battering_ram.speak(\"Next you'll say you don't even know me!\"), \"completed\")
-	yield(battering_ram.speak(\"...you do know me, right?\"), \"completed\")
-	yield(player.speak(\"...this seems to be a constant theme...\"), \"completed\")
-	yield(battering_ram.speak(\"Well, I'm Battering Ram! The most evil!\"), \"completed\")
-	yield(battering_ram.speak(\"You could tell I'm evil, right? No?\"), \"completed\")
-	yield(battering_ram.speak(\"What is it, the tweed jacket? I've been looking for a lapel vest to match the hue of my pants but can't seem to find any good deals to be honest. I mean, I saw there was a discount the other day but I'm not part of the store's rewards program. Who actually joints the rewards program? I already collect so many coupons in the magazines and it's absolutely tedious--\", false, true, 50, true), \"completed\")
-	yield(battering_ram.speak(\"YES I'M EVIL!\"), \"completed\")
-	yield(battering_ram.speak(\"And now, I will destroy you!\"), \"completed\")
-	yield(get_tree().create_timer(1), \"timeout\")
+	if false:
+		yield(battering_ram.speak(\"So you're the one snooping around my basement!\"), \"completed\")
+		yield(player.speak(\"...I didn't even know this was yours.\"), \"completed\")
+		battering_ram.taunt()
+		yield(battering_ram.speak(\"You're joking!\"), \"completed\")
+		yield(battering_ram.speak(\"Next you'll say you don't even know me!\"), \"completed\")
+		yield(battering_ram.speak(\"...you do know me, right?\"), \"completed\")
+		yield(player.speak(\"...this seems to be a constant theme...\"), \"completed\")
+		yield(battering_ram.speak(\"Well, I'm Battering Ram! The most evil!\"), \"completed\")
+		yield(battering_ram.speak(\"You could tell I'm evil, right? No?\"), \"completed\")
+		yield(battering_ram.speak(\"What is it, the tweed jacket? I've been looking for a lapel vest to match the hue of my pants but can't seem to find any good deals to be honest. I mean, I saw there was a discount the other day but I'm not part of the store's rewards program. Who actually joints the rewards program? I already collect so many coupons in the magazines and it's absolutely tedious--\", false, true, 50, true), \"completed\")
+		yield(battering_ram.speak(\"YES I'M EVIL!\"), \"completed\")
+		yield(battering_ram.speak(\"And now, I will destroy you!\"), \"completed\")
+		yield(get_tree().create_timer(1), \"timeout\")
 	SoundManager.play(\"Battering Ram\", -10) #time is 76 seconds
 	GameManager.set_lock_input(false)
 	pet.set_target(null)
@@ -72,6 +75,10 @@ func execute():
 	yield(get_tree().create_timer(40), \"timeout\")
 	yield(get_tree().create_timer(6), \"timeout\")
 	GameManager.set_lock_input(true)
+	player.set_target(battering_ram)
+	pet.set_target(battering_ram)
+	for enemy in enemies:
+		enemy.die()
 	yield(battering_ram.speak(\"Very well! I'll let you go.\"), \"completed\")
 	yield(battering_ram.speak(\"But just this once!\"), \"completed\")
 	yield(battering_ram.speak(\"...I'm about to miss karaoke night.\"), \"completed\")
@@ -80,6 +87,8 @@ func execute():
 	battering_ram.taunt()
 	yield(GameManager.scene.get_node(\"Map/Platform\").set_on(false), \"completed\")
 	GameManager.set_lock_input(false)
+	player.set_target(null)
+	pet.set_target(null)
 	pass
 "
 

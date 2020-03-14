@@ -23,6 +23,7 @@ func spawn():
 	var spawned_object = object.instance()
 	add_child(spawned_object)
 	spawned_object.global_position = global_position
+	return spawned_object
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

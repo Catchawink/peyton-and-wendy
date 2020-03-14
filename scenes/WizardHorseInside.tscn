@@ -62,6 +62,7 @@ script/source = "extends \"res://scripts/Event.gd\"
 
 # Called when the node enters the scene tree for the first time.
 func execute():
+	GameManager.is_pet_missing = false
 	wizard_horse.taunt()
 	yield(wizard_horse.speak(\"Heh heh!\"), \"completed\")
 	yield(wizard_horse.speak(\"Welcome, welcome!\"), \"completed\")
@@ -88,47 +89,46 @@ func execute():
 script/source = "extends \"res://scripts/Event.gd\"
 
 func is_valid():
-	return GameManager.inventory.has(\"sword\")
+	return GameManager.inventory.has(\"gem\")
 	
 # Called when the node enters the scene tree for the first time.
 func execute():
-	if false:
-		yield(player.speak(\"I got your shit.\"), \"completed\")
-		wizard_horse.taunt()
-		yield(wizard_horse.speak(\"Fantastic!\"), \"completed\")
-		yield(wizard_horse.speak(\"Now the magic begins!\"), \"completed\")
-		#AudioServer.set_bus_volume_db(AudioServer.get_bus_index(\"Scene\"), -72)
-		SoundManager.mute_ambience()
-		SoundManager.play(\"spell_b\", -20)
-		yield(wizard_horse.speak(\"By the power of the three divine...\", false), \"completed\")
-		yield(wizard_horse.speak(\"And the fourth... guy.\", false), \"completed\")
-		yield(wizard_horse.speak(\"Dave.\", false), \"completed\")
-		yield(wizard_horse.speak(\"His name is Dave.\", false), \"completed\")
-		yield(wizard_horse.speak(\"Wait. It's Donavon.\", false), \"completed\")
-		yield(wizard_horse.speak(\"Donavon... with an e?\", false), \"completed\")
-		yield(wizard_horse.speak(\"Donavone...\", false), \"completed\")
-		SoundManager.play(\"spell_c\", -20)
-		yield(wizard_horse.speak(\"Hear me now.\", false), \"completed\")
-		yield(wizard_horse.speak(\"Fill this room, oh great ones.\", false), \"completed\")
-		yield(wizard_horse.speak(\"With your...\", false), \"completed\")
-		yield(wizard_horse.speak(\"...arms and legs.\", false), \"completed\")
-		wizard_horse.taunt()
-		yield(wizard_horse.speak(\"Oh! It's happening!\", false), \"completed\")
-		yield(wizard_horse.speak(\"This is it!\", false), \"completed\")
-		yield(player.speak(\"Are you okay?\", false), \"completed\")
-		yield(wizard_horse.speak(\"Y-Yeah.\", false), \"completed\")
-		wizard_horse.taunt()
-		yield(wizard_horse.speak(\"No! My leg is cramping a little.\", false), \"completed\")
-		SoundManager.clear(5)
-		yield(get_tree().create_timer(3), \"timeout\")
-		SoundManager.unmute_ambience()
-		yield(GameManager.scene.get_node(\"Cauldron\").poof(), \"completed\")
-		yield(player.speak(\"Is it over?\"), \"completed\")
-		yield(wizard_horse.speak(\"Heh! Sure is!\"), \"completed\")
-		yield(player.speak(\"Ugh... What's that smell?\"), \"completed\")
-		yield(wizard_horse.speak(\"That's the brew!\"), \"completed\")
-		yield(wizard_horse.speak(\"It has strong restorative powers.\"), \"completed\")
-		
+	yield(player.speak(\"I got your shit.\"), \"completed\")
+	wizard_horse.taunt()
+	yield(wizard_horse.speak(\"Fantastic!\"), \"completed\")
+	yield(wizard_horse.speak(\"Now the magic begins!\"), \"completed\")
+	#AudioServer.set_bus_volume_db(AudioServer.get_bus_index(\"Scene\"), -72)
+	SoundManager.mute_ambience()
+	SoundManager.play(\"spell_b\", -20)
+	yield(wizard_horse.speak(\"By the power of the three divine...\", false), \"completed\")
+	yield(wizard_horse.speak(\"And the fourth... guy.\", false), \"completed\")
+	yield(wizard_horse.speak(\"Dave.\", false), \"completed\")
+	yield(wizard_horse.speak(\"His name is Dave.\", false), \"completed\")
+	yield(wizard_horse.speak(\"Wait. It's Donavon.\", false), \"completed\")
+	yield(wizard_horse.speak(\"Donavon... with an e?\", false), \"completed\")
+	yield(wizard_horse.speak(\"Donavone...\", false), \"completed\")
+	SoundManager.play(\"spell_c\", -20)
+	yield(wizard_horse.speak(\"Hear me now.\", false), \"completed\")
+	yield(wizard_horse.speak(\"Fill this room, oh great ones.\", false), \"completed\")
+	yield(wizard_horse.speak(\"With your...\", false), \"completed\")
+	yield(wizard_horse.speak(\"...arms and legs.\", false), \"completed\")
+	wizard_horse.taunt()
+	yield(wizard_horse.speak(\"Oh! It's happening!\", false), \"completed\")
+	yield(wizard_horse.speak(\"This is it!\", false), \"completed\")
+	yield(player.speak(\"Are you okay?\", false), \"completed\")
+	yield(wizard_horse.speak(\"Y-Yeah.\", false), \"completed\")
+	wizard_horse.taunt()
+	yield(wizard_horse.speak(\"No! My leg is cramping a little.\", false), \"completed\")
+	SoundManager.clear(5)
+	yield(get_tree().create_timer(3), \"timeout\")
+	SoundManager.unmute_ambience()
+	yield(GameManager.scene.get_node(\"Cauldron\").poof(), \"completed\")
+	yield(player.speak(\"Is it over?\"), \"completed\")
+	yield(wizard_horse.speak(\"Heh! Sure is!\"), \"completed\")
+	yield(player.speak(\"Ugh... What's that smell?\"), \"completed\")
+	yield(wizard_horse.speak(\"That's the brew!\"), \"completed\")
+	yield(wizard_horse.speak(\"It has strong restorative powers.\"), \"completed\")
+	
 	pet.sneeze()
 	SoundManager.play(\"dog_sneeze\", -20, 2)
 	yield(get_tree().create_timer(.5), \"timeout\")
@@ -230,7 +230,13 @@ bus = "Ambience"
 [node name="SpellBook" parent="." instance=ExtResource( 30 )]
 position = Vector2( 128, 158 )
 z_index = 50
-text = "Ingredients: 2 Green Slime, 5 Red Apples, 1 Snake Tail."
+text = "Ingredients:
+
+...Because you broke up with the god of this world, content was cut.
+
+So... the only ingredient is a gem...
+
+Happy hunting!"
 
 [node name="Door" parent="." instance=ExtResource( 28 )]
 position = Vector2( 99, 168 )
@@ -271,20 +277,18 @@ frame = 7
 position = Vector2( 0, -6 )
 z_index = -2
 frames = SubResource( 3 )
-frame = 2
+frame = 4
 playing = true
 
 [node name="Bubbles2" type="AnimatedSprite" parent="Cauldron"]
 position = Vector2( 0, -6 )
 z_index = -2
 frames = SubResource( 3 )
-frame = 5
 speed_scale = 0.5
 playing = true
 flip_h = true
 
 [node name="MeetEvent" parent="." instance=ExtResource( 7 )]
-visible = false
 position = Vector2( 74, 159 )
 script = SubResource( 4 )
 is_input_locked = true
