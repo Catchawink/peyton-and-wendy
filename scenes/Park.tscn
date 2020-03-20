@@ -219,10 +219,6 @@ autoplay = true
 
 [node name="Spawner" parent="." instance=ExtResource( 12 )]
 position = Vector2( 100, 160 )
-object = null
-scene_name = ""
-path_name = ""
-flip_h = false
 
 [node name="ParkEvent" parent="." instance=ExtResource( 6 )]
 position = Vector2( 366, 144 )

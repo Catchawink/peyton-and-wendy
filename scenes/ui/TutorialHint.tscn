@@ -1,29 +1,10 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://ui/dark_circle.png" type="Texture" id=1]
 [ext_resource path="res://scripts/Outline.gd" type="Script" id=3]
 [ext_resource path="res://fonts/small_font.tres" type="DynamicFont" id=6]
 [ext_resource path="res://ui/medium_dark_circle.png" type="Texture" id=7]
 
-[sub_resource type="StyleBoxEmpty" id=4]
-
-[sub_resource type="StyleBoxEmpty" id=5]
-
-[sub_resource type="StyleBoxEmpty" id=6]
-
-[sub_resource type="StyleBoxEmpty" id=7]
-
-[sub_resource type="StyleBoxEmpty" id=2]
-
-[sub_resource type="StyleBoxTexture" id=3]
-texture = ExtResource( 1 )
-region_rect = Rect2( 0, 0, 8, 8 )
-margin_left = 3.0
-margin_right = 2.0
-margin_top = 3.0
-margin_bottom = 5.0
-
-[sub_resource type="StyleBoxTexture" id=1]
+[sub_resource type="StyleBoxTexture" id=2]
 texture = ExtResource( 7 )
 region_rect = Rect2( 0, 0, 8, 8 )
 margin_left = 3.0
@@ -31,32 +12,12 @@ margin_right = 2.0
 margin_top = 3.0
 margin_bottom = 3.0
 
-[node name="Label" type="Button"]
+[node name="Label" type="Label"]
+margin_right = 35.0
 margin_bottom = 6.0
 size_flags_horizontal = 4
-custom_styles/hover = SubResource( 4 )
-custom_styles/pressed = SubResource( 5 )
-custom_styles/focus = SubResource( 6 )
-custom_styles/disabled = SubResource( 7 )
-custom_styles/normal = SubResource( 2 )
 custom_fonts/font = ExtResource( 6 )
 text = "A"
-align = 0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label7" type="Label" parent="."]
-show_behind_parent = true
-margin_left = -3.0
-margin_top = -3.0
-margin_right = 9.0
-margin_bottom = 11.0
-custom_styles/normal = SubResource( 3 )
-custom_fonts/font = ExtResource( 6 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "A"
-script = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -65,9 +26,9 @@ __meta__ = {
 show_behind_parent = true
 margin_left = -3.0
 margin_top = -3.0
-margin_right = 9.0
+margin_right = 32.0
 margin_bottom = 9.0
-custom_styles/normal = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
 custom_fonts/font = ExtResource( 6 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "A"
@@ -79,7 +40,7 @@ __meta__ = {
 [node name="Label5" type="Label" parent="."]
 show_behind_parent = true
 margin_top = -1.0
-margin_right = 7.0
+margin_right = 35.0
 margin_bottom = 5.0
 custom_fonts/font = ExtResource( 6 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
@@ -92,7 +53,7 @@ __meta__ = {
 [node name="Label3" type="Label" parent="."]
 show_behind_parent = true
 margin_top = 2.0
-margin_right = 7.0
+margin_right = 35.0
 margin_bottom = 8.0
 custom_fonts/font = ExtResource( 6 )
 custom_colors/font_color = Color( 0, 0, 0, 0.254902 )
@@ -106,7 +67,7 @@ __meta__ = {
 show_behind_parent = true
 margin_left = 1.0
 margin_top = -1.0
-margin_right = 8.0
+margin_right = 36.0
 margin_bottom = 5.0
 custom_fonts/font = ExtResource( 6 )
 custom_colors/font_color = Color( 0, 0, 0, 0.254902 )
@@ -120,7 +81,7 @@ __meta__ = {
 show_behind_parent = true
 margin_left = -1.0
 margin_top = -1.0
-margin_right = 6.0
+margin_right = 34.0
 margin_bottom = 5.0
 custom_fonts/font = ExtResource( 6 )
 custom_colors/font_color = Color( 0, 0, 0, 0.254902 )
@@ -133,7 +94,7 @@ __meta__ = {
 [node name="Label2" type="Label" parent="."]
 show_behind_parent = true
 margin_top = 1.0
-margin_right = 7.0
+margin_right = 35.0
 margin_bottom = 7.0
 custom_fonts/font = ExtResource( 6 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
@@ -147,7 +108,7 @@ __meta__ = {
 show_behind_parent = true
 margin_left = 1.0
 margin_top = -1.0
-margin_right = 8.0
+margin_right = 36.0
 margin_bottom = 5.0
 custom_fonts/font = ExtResource( 6 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
@@ -161,7 +122,7 @@ __meta__ = {
 show_behind_parent = true
 margin_left = -1.0
 margin_top = -1.0
-margin_right = 6.0
+margin_right = 34.0
 margin_bottom = 5.0
 custom_fonts/font = ExtResource( 6 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
